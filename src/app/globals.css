@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary-dark-blue: #0A4378;
+  --color-primary-blue: #1971C2;
+  --color-primary-light-blue: #D0EBFF;
+  --color-primary-beige: #F0F9FF;
+  --color-hover-blue: #1d4ed8;
+  --color-gray-headline: #061800;
+  --color-gray-paragraph: #384633;
+  --color-off-white: #E3E3E3;
+
+  --spacing-custom: 10rem;
+}
+
 html{
   scroll-behavior: smooth;
 }
