@@ -1,10 +1,11 @@
 import { HeroBanner } from "@/components/HeroBanner";
-import Image from "next/image";
+import { Services } from "@/components/Services";
 
 export default function Home() {
   return (
     <>
       <HeroBanner/>
+      <Services/>
     </>
   );
 }

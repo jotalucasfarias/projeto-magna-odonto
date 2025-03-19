@@ -15,7 +15,9 @@ export function HeroBanner() {
             Cuidados odontológicos <br /> simplificados para todos
           </h1>
           <p className="text-gray-paragraph text-lg mb-8">
-            Os dentistas da Clínica Magna Odonto vão além dos problemas aparentes para tratar a causa raiz de sua saúde bucal, proporcionando um tratamento eficaz e duradouro.
+            Os dentistas da Clínica Magna Odonto vão além dos problemas
+            aparentes para tratar a causa raiz de sua saúde bucal,
+            proporcionando um tratamento eficaz e duradouro.
           </p>
           <button className="self-start items-center gap-2 font-bold bg-primary-dark-blue text-white px-6 py-3 rounded-full hover:bg-hover-blue transition-colors">
             AGENDE SUA CONSULTA
