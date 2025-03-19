@@ -48,7 +48,7 @@ export function Header() {
           </nav>
 
           {/* Botão de agendamento para telas maiores */}
-          <Button text="AGENDAR CONSULTA" />
+          <Button text="AGENDAR CONSULTA" className="hidden md:block" />
 
           {/* Botão de menu para dispositivos móveis */}
           <button className="md:hidden z-50">
