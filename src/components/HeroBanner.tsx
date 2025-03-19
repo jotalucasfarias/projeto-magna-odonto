@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Woman from "@/assets/woman.png";
+import { Button } from "./ui/Button";
 
 export function HeroBanner() {
   return (
@@ -19,9 +20,9 @@ export function HeroBanner() {
             aparentes para tratar a causa raiz de sua saúde bucal,
             proporcionando um tratamento eficaz e duradouro.
           </p>
-          <button className="self-start items-center gap-2 font-bold bg-primary-dark-blue text-white px-6 py-3 rounded-full hover:bg-hover-blue transition-colors">
-            AGENDE SUA CONSULTA
-          </button>
+
+          {/* Botão de agendamento */}
+          <Button text="AGENDE SUA CONSULTA" />
         </div>
 
         {/* Imagem à direita em telas maiores */}
