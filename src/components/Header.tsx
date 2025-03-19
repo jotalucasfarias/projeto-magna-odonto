@@ -1,13 +1,12 @@
 "use client";
 import Image from "next/image";
 import LogoDark from "../assets/logo-blue-dark.png";
-import LogoWhite from "../assets/logo-white.png";
 import Link from "next/link";
 
 export function Header() {
   return (
     <>
-      <header className="w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center bg-primary-light-blue transition-all duration-300 z-20 translate-y-0 shadow-lg">
+      <header className="w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center bg-primary-light-blue ">
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
           <Link href="/" className="flex items-center">
             <Image
