@@ -3,8 +3,7 @@
 import Image from "next/image";
 import GuyImage from "../assets/guy.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "./ui/Button";
 
 export function Contact() {
@@ -25,9 +24,9 @@ export function Contact() {
             <div className="flex items-center gap-2">
               <FontAwesomeIcon
                 icon={faLocationDot}
-                className="w-6 h-6 text-primary-dark-blue"
+                className="text-2xl text-primary-dark-blue"
               />
-              <span className="text-gray-paragraph">
+              <span className="text-gray-paragraph ml-2">
                 Av. Jatuarana n°4941, Nova Floresta. Sala 01
                 <br />
                 Porto Velho - RO
@@ -35,10 +34,10 @@ export function Contact() {
             </div>
             <div className="flex items-center gap-2">
               <FontAwesomeIcon
-                icon={faWhatsapp}
-                className="w-6 h-6 text-primary-dark-blue"
+                icon={faPhone}
+                className="text-2xl text-primary-dark-blue"
               />
-              <span className="text-gray-paragraph">(69) 99623-1234</span>
+              <span className="text-gray-paragraph ml-1">(69) 99602-1979</span>
             </div>
           </div>
 
