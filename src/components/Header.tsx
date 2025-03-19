@@ -1,15 +1,22 @@
 "use client";
 import Image from "next/image";
 import LogoDark from "../assets/logo-blue-dark.png";
-import Link from "next/link";
 import { Button } from "./ui/Button";
 
 export function Header() {
+  // Função para rolar suavemente até a seção sem mudar a URL
+  const scrollToSection = (id : string) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <>
-      <header className="w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center bg-primary-light-blue ">
+      <header className="w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center bg-primary-light-blue">
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
-          <Link href="/" className="flex items-center">
+          <button onClick={() => scrollToSection("home")} className="flex items-center">
             <Image
               src={LogoDark}
               alt="Magna Odonto Logo"
@@ -17,34 +24,34 @@ export function Header() {
               height={50}
               className="h-auto"
             />
-          </Link>
+          </button>
 
           {/* Menu de navegação para telas maiores */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              href="#home"
+            <button
+              onClick={() => scrollToSection("home")}
               className="p-[27px] flex items-center border-b-2 border-primary-dark-blue font-bold text-primary-dark-blue"
             >
               Início
-            </Link>
-            <Link
-              href="#services"
+            </button>
+            <button
+              onClick={() => scrollToSection("services")}
               className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
             >
               Serviços
-            </Link>
-            <Link
-              href="#about"
+            </button>
+            <button
+              onClick={() => scrollToSection("about")}
               className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
             >
               Sobre
-            </Link>
-            <Link
-              href="#contact"
+            </button>
+            <button
+              onClick={() => scrollToSection("contact")}
               className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
             >
               Contato
-            </Link>
+            </button>
           </nav>
 
           {/* Botão de agendamento para telas maiores */}
