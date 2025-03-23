@@ -1,22 +1,39 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import LogoDark from "../assets/logo-blue-dark.png";
 import { Button } from "./ui/Button";
+import AppointmentModal from "./ui/AppointmentModal";
 
 export function Header() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Função para rolar suavemente até a seção sem mudar a URL
-  const scrollToSection = (id : string) => {
+  const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
+  // Função para abrir o modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Função para fechar o modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <header className="w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center bg-primary-light-blue">
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
-          <button onClick={() => scrollToSection("home")} className="flex items-center">
+          <button
+            onClick={() => scrollToSection("home")}
+            className="flex items-center"
+          >
             <Image
               src={LogoDark}
               alt="Magna Odonto Logo"
@@ -55,7 +72,11 @@ export function Header() {
           </nav>
 
           {/* Botão de agendamento para telas maiores */}
-          <Button text="AGENDAR CONSULTA" className="hidden md:block" />
+          <Button
+            text="AGENDAR CONSULTA"
+            className="hidden md:block"
+            onClick={openModal}
+          />
 
           {/* Botão de menu para dispositivos móveis */}
           <button className="md:hidden z-50">
@@ -79,6 +100,9 @@ export function Header() {
 
       {/* Espaço para compensar o header fixo */}
       <div className="h-20"></div>
+
+      {/* Modal de Agendamento */}
+      {isModalOpen && <AppointmentModal onClose={closeModal} />}
     </>
   );
 }

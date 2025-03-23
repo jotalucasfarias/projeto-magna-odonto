@@ -1,12 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import GuyImage from "../assets/guy.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "./ui/Button";
+import AppointmentModal from "./ui/AppointmentModal";
 
 export function Contact() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <section
       id="contact"
@@ -42,7 +54,7 @@ export function Contact() {
           </div>
 
           {/* Botão de Agendar */}
-          <Button text="AGENDE SUA CONSULTA" />
+          <Button text="AGENDE SUA CONSULTA" onClick={openModal} />
         </div>
 
         {/* Imagem ao lado direito */}
@@ -55,6 +67,9 @@ export function Contact() {
           />
         </div>
       </div>
+
+      {/* Modal de Agendamento */}
+      {isModalOpen && <AppointmentModal onClose={closeModal} />}
     </section>
   );
 }

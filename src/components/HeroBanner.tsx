@@ -1,9 +1,21 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Woman from "@/assets/woman.png";
 import { Button } from "./ui/Button";
+import AppointmentModal from "./ui/AppointmentModal";
 
 export function HeroBanner() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <section id="home" className="relative w-full bg-primary-light-blue">
       <div className="container mx-auto px-4 pt-7 flex flex-col md:flex-row items-center justify-between max-w-7xl">
@@ -22,7 +34,7 @@ export function HeroBanner() {
           </p>
 
           {/* Botão de agendamento */}
-          <Button text="AGENDE SUA CONSULTA" />
+          <Button text="AGENDE SUA CONSULTA" onClick={openModal} />
         </div>
 
         {/* Imagem à direita em telas maiores */}
@@ -35,6 +47,9 @@ export function HeroBanner() {
           />
         </div>
       </div>
+
+      {/* Modal de Agendamento */}
+      {isModalOpen && <AppointmentModal onClose={closeModal} />}
     </section>
   );
 }
