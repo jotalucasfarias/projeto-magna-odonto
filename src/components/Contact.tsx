@@ -6,7 +6,7 @@ import GuyImage from "../assets/guy.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "./ui/Button";
-import AppointmentModal from "./ui/AppointmentModal";
+import AppointmentModal from "./modal/ModalAgendamento";
 
 export function Contact() {
   const [isModalOpen, setIsModalOpen] = useState(false);

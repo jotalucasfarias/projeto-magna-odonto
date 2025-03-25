@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Woman from "@/assets/woman.png";
 import { Button } from "./ui/Button";
-import AppointmentModal from "./ui/AppointmentModal";
+import AppointmentModal from "./modal/ModalAgendamento";
 
 export function HeroBanner() {
   const [isModalOpen, setIsModalOpen] = useState(false);

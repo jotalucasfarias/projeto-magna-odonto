@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import LogoDark from "../assets/logo-blue-dark.png";
 import { Button } from "./ui/Button";
-import AppointmentModal from "./ui/AppointmentModal";
+import AppointmentModal from "./modal/ModalAgendamento";
 
 export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
