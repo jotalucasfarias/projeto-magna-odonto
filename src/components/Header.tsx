@@ -2,11 +2,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import LogoDark from "../assets/logo-blue-dark.png";
+import LogoWhite from "../assets/logo-white.png";
 import { Button } from "./ui/Button";
 import AppointmentModal from "./modal/ModalAgendamento";
 
 export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Função para rolar suavemente até a seção sem mudar a URL
   const scrollToSection = (id: string) => {
@@ -14,11 +16,15 @@ export function Header() {
     if (section) {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    // Fechar o menu ao clicar em uma seção
+    if (isMenuOpen) setIsMenuOpen(false);
   };
 
   // Função para abrir o modal
   const openModal = () => {
     setIsModalOpen(true);
+    // Fechar o menu mobile ao abrir o modal
+    if (isMenuOpen) setIsMenuOpen(false);
   };
 
   // Função para fechar o modal
@@ -26,20 +32,29 @@ export function Header() {
     setIsModalOpen(false);
   };
 
+  // Função para alternar o menu mobile
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <>
-      <header className="w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center bg-primary-light-blue">
+      <header
+        className={`w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center ${
+          isMenuOpen ? "bg-primary-dark-blue" : "bg-primary-light-blue"
+        } z-40 transition-colors duration-300`}
+      >
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
           <button
             onClick={() => scrollToSection("home")}
-            className="flex items-center"
+            className="flex items-center z-50"
           >
             <Image
-              src={LogoDark}
+              src={isMenuOpen ? LogoWhite : LogoDark}
               alt="Magna Odonto Logo"
               width={150}
               height={50}
-              className="h-auto"
+              className="h-auto relative"
             />
           </button>
 
@@ -79,27 +94,90 @@ export function Header() {
           />
 
           {/* Botão de menu para dispositivos móveis */}
-          <button className="md:hidden z-50">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-primary-dark-blue"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+          <button className="md:hidden z-50" onClick={toggleMenu}>
+            {isMenuOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-primary-dark-blue"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
           </button>
         </div>
       </header>
 
       {/* Espaço para compensar o header fixo */}
       <div className="h-20"></div>
+
+      {/* Menu mobile */}
+      <aside
+        className={`fixed inset-0 bg-primary-dark-blue transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        } md:hidden z-30`}
+      >
+        <div className="container mx-auto px-4 py-20">
+          {/* Items do menu mobile */}
+          <nav className="flex flex-col items-center space-y-6 text-center">
+            <button
+              onClick={() => scrollToSection("home")}
+              className="py-3 w-full text-white font-bold text-xl"
+            >
+              Início
+            </button>
+            <button
+              onClick={() => scrollToSection("services")}
+              className="py-3 w-full text-white font-normal text-xl"
+            >
+              Serviços
+            </button>
+            <button
+              onClick={() => scrollToSection("about")}
+              className="py-3 w-full text-white font-normal text-xl"
+            >
+              Sobre
+            </button>
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="py-3 w-full text-white font-normal text-xl"
+            >
+              Contato
+            </button>
+
+            {/* Botão de agendar no menu mobile */}
+            <button
+              onClick={openModal}
+              className={`items-center font-bold bg-primary-light-blue text-primary-dark-blue px-6 py-3 rounded-full 
+            hover:bg-hover-blue hover:text-primary-light-blue transition-colors cursor-pointer`}
+            >
+              AGENDAR CONSULTA
+            </button>
+          </nav>
+        </div>
+      </aside>
 
       {/* Modal de Agendamento */}
       {isModalOpen && <AppointmentModal onClose={closeModal} />}
