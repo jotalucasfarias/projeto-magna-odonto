@@ -15,6 +15,7 @@ import {
   doc,
   where,
   QueryConstraint,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,6 +24,7 @@ import {
   faClock,
   faUser,
   faFileAlt,
+  
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faPhone,
@@ -30,7 +32,16 @@ import {
   faDownload,
   faChartBar,
   faFilter,
+  faCommentMedical,
+  faCheck,
+  faBan,
+  faStar as solidStar,
 } from "@fortawesome/free-solid-svg-icons";
+import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { Testimonial } from "@/lib/types/testimonial";
+import { testimonialService } from "@/services/testimonial";
+import toast from "react-hot-toast";
 
 interface AdminAppointment {
   id: string;
@@ -67,6 +78,9 @@ export default function AdminDashboard() {
   const [reportData, setReportData] = useState<AdminAppointment[]>([]);
   const [services, setServices] = useState<string[]>([]);
 
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [showTestimonialsPanel, setShowTestimonialsPanel] = useState(false);
+
   const auth = getAuth();
 
   useEffect(() => {
@@ -74,12 +88,57 @@ export default function AdminDashboard() {
       setIsAuthenticated(!!user);
       setIsLoading(false);
       if (user) {
-        fetchAppointments();
+        // Não precisamos chamar fetchAppointments e fetchTestimonials aqui
+        // pois usaremos listeners em tempo real
       }
     });
 
     return () => unsubscribe();
   }, [auth]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const appointmentsRef = collection(db, "appointments");
+    const q = query(appointmentsRef, orderBy("date", "asc"));
+    
+    // Este listener vai atualizar os dados sempre que houver mudanças
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const appointmentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as AdminAppointment[];
+
+      setAppointments(appointmentsData);
+
+      // Extrair lista única de serviços para o filtro de relatórios
+      const uniqueServices = [
+        ...new Set(appointmentsData.map((app) => app.service)),
+      ];
+      setServices(uniqueServices);
+    });
+
+    // Retorne a função de limpeza para remover o listener
+    return () => unsubscribe();
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    // Aqui você precisa obter uma referência à coleção de depoimentos
+    const testimonialsRef = collection(db, "testimonials");
+    
+    const unsubscribe = onSnapshot(testimonialsRef, (querySnapshot) => {
+      const testimonialData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Testimonial[];
+      
+      setTestimonials(testimonialData);
+    });
+
+    return () => unsubscribe();
+  }, [isAuthenticated]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,7 +188,8 @@ export default function AdminDashboard() {
     if (window.confirm("Tem certeza que deseja cancelar este agendamento?")) {
       try {
         await deleteDoc(doc(db, "appointments", id));
-        await fetchAppointments();
+        // Não precisa chamar fetchAppointments() aqui
+        // O listener onSnapshot atualizará automaticamente os dados
       } catch (err) {
         console.error("Erro ao deletar agendamento:", err);
       }
@@ -271,6 +331,71 @@ export default function AdminDashboard() {
     );
   };
 
+  const handleApproveTestimonial = async (id: string) => {
+    try {
+      await testimonialService.updateApprovalStatus(id, true);
+      // Não precisa chamar fetchTestimonials() aqui
+      toast.success("Depoimento aprovado com sucesso!");
+    } catch (err) {
+      console.error("Erro ao aprovar depoimento:", err);
+      toast.error("Erro ao aprovar depoimento");
+    }
+  };
+
+  const handleRejectTestimonial = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja rejeitar este depoimento?")) {
+      try {
+        await testimonialService.updateApprovalStatus(id, false);
+        // Não precisa chamar fetchTestimonials() aqui
+        toast.success("Depoimento rejeitado com sucesso!");
+      } catch (err) {
+        console.error("Erro ao rejeitar depoimento:", err);
+        toast.error("Erro ao rejeitar depoimento");
+      }
+    }
+  };
+
+  const handleDeleteTestimonial = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir este depoimento?")) {
+      try {
+        await testimonialService.deleteTestimonial(id);
+        // Não precisa chamar fetchTestimonials() aqui
+        toast.success("Depoimento excluído com sucesso!");
+      } catch (err) {
+        console.error("Erro ao excluir depoimento:", err);
+        toast.error("Erro ao excluir depoimento");
+      }
+    }
+  };
+
+  // Adicione esta função para formatar o número de telefone para o WhatsApp
+  const formatWhatsAppNumber = (phone: string): string => {
+    // Remove caracteres não numéricos
+    const numbersOnly = phone.replace(/\D/g, '');
+    
+    // Se começar com 0, remova-o
+    let formattedNumber = numbersOnly.startsWith('0') 
+      ? numbersOnly.substring(1) 
+      : numbersOnly;
+    
+    // Se não tiver o código do país, adicione +55 (Brasil)
+    if (!formattedNumber.startsWith('55')) {
+      formattedNumber = `55${formattedNumber}`;
+    }
+    
+    return formattedNumber;
+  };
+
+  // Adicione esta função para criar o link do WhatsApp com uma mensagem predefinida
+  const createWhatsAppLink = (phone: string, name: string, date: string, timeSlot: string, service: string): string => {
+    const formattedPhone = formatWhatsAppNumber(phone);
+    const message = encodeURIComponent(
+      `Olá ${name}, gostaríamos de confirmar seu agendamento para ${service} em ${date} às ${timeSlot}. Contamos com sua presença! Magna Odonto.`
+    );
+    
+    return `https://wa.me/${formattedPhone}?text=${message}`;
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -357,9 +482,12 @@ export default function AdminDashboard() {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               <button
-                onClick={() => setShowReportPanel(false)}
+                onClick={() => {
+                  setShowReportPanel(false);
+                  setShowTestimonialsPanel(false);
+                }}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  !showReportPanel
+                  !showReportPanel && !showTestimonialsPanel
                     ? "border-primary-blue text-primary-blue"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -367,9 +495,12 @@ export default function AdminDashboard() {
                 Agendamentos
               </button>
               <button
-                onClick={() => setShowReportPanel(true)}
+                onClick={() => {
+                  setShowReportPanel(true);
+                  setShowTestimonialsPanel(false);
+                }}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  showReportPanel
+                  showReportPanel && !showTestimonialsPanel
                     ? "border-primary-blue text-primary-blue"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -377,11 +508,25 @@ export default function AdminDashboard() {
                 <FontAwesomeIcon icon={faChartBar} className="mr-2" />
                 Relatórios
               </button>
+              <button
+                onClick={() => {
+                  setShowReportPanel(false);
+                  setShowTestimonialsPanel(true);
+                }}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  showTestimonialsPanel
+                    ? "border-primary-blue text-primary-blue"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                <FontAwesomeIcon icon={faCommentMedical} className="mr-2" />
+                Depoimentos
+              </button>
             </nav>
           </div>
         </div>
 
-        {!showReportPanel ? (
+        {!showReportPanel && !showTestimonialsPanel ? (
           // Painel de Agendamentos (existente)
           <div className="bg-white rounded-lg shadow p-6 mb-8">
             <div className="flex items-center gap-4 mb-6">
@@ -429,74 +574,98 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filterAppointmentsByDate(appointments).map((appointment) => (
-                    <tr key={appointment.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <FontAwesomeIcon
-                            icon={faUser}
-                            className="h-5 w-5 text-gray-400 mr-2"
-                          />
-                          <div className="text-sm font-medium text-gray-900">
-                            {appointment.name}
+                  {filterAppointmentsByDate(appointments).length > 0 ? (
+                    filterAppointmentsByDate(appointments).map((appointment) => (
+                      <tr key={appointment.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <FontAwesomeIcon
+                              icon={faUser}
+                              className="h-5 w-5 text-gray-400 mr-2"
+                            />
+                            <div className="text-sm font-medium text-gray-900">
+                              {appointment.name}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {appointment.service}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <FontAwesomeIcon
-                            icon={faCalendar}
-                            className="h-5 w-5 text-gray-400 mr-2"
-                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            {appointment.date}
+                            {appointment.service}
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <FontAwesomeIcon
-                            icon={faClock}
-                            className="h-5 w-5 text-gray-400 mr-2"
-                          />
-                          <div className="text-sm text-gray-900">
-                            {appointment.timeSlot}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <FontAwesomeIcon
+                              icon={faCalendar}
+                              className="h-5 w-5 text-gray-400 mr-2"
+                            />
+                            <div className="text-sm text-gray-900">
+                              {appointment.date}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <FontAwesomeIcon
-                            icon={faPhone}
-                            className="h-5 w-5 text-gray-400 mr-2"
-                          />
-                          <div className="text-sm text-gray-900">
-                            {appointment.phone}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              className="h-5 w-5 text-gray-400 mr-2"
+                            />
+                            <div className="text-sm text-gray-900">
+                              {appointment.timeSlot}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() =>
-                            handleDeleteAppointment(appointment.id)
-                          }
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
-                        </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <FontAwesomeIcon
+                              icon={faPhone}
+                              className="h-5 w-5 text-gray-400 mr-2"
+                            />
+                            <div className="text-sm text-gray-900">
+                              {appointment.phone}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex space-x-3">
+                            <a
+                              href={createWhatsAppLink(
+                                appointment.phone,
+                                appointment.name,
+                                appointment.date,
+                                appointment.timeSlot,
+                                appointment.service
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-green-600 hover:text-green-800"
+                              title="Enviar lembrete"
+                            >
+                              <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5" />
+                            </a>
+                            <button
+                              onClick={() => handleDeleteAppointment(appointment.id)}
+                              className="text-red-600 hover:text-red-900"
+                              title="Cancelar agendamento"
+                            >
+                              <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                        Nenhum agendamento para esta data
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
-        ) : (
+        ) : showReportPanel ? (
           // Painel de Relatórios (novo)
           <div className="bg-white rounded-lg shadow p-6 mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
@@ -680,6 +849,121 @@ export default function AdminDashboard() {
                 novamente.
               </div>
             )}
+          </div>
+        ) : (
+          // Painel de Depoimentos (novo)
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <FontAwesomeIcon icon={faCommentMedical} className="mr-2" />
+              Gerenciar Depoimentos
+            </h2>
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Paciente
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Serviço
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Avaliação
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Comentário
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {testimonials.length > 0 ? (
+                    testimonials.map((testimonial) => (
+                      <tr key={testimonial.id} className={!testimonial.approved ? "bg-gray-50" : ""}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {testimonial.name}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {testimonial.service}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <FontAwesomeIcon
+                                key={i}
+                                icon={i < testimonial.rating ? solidStar : regularStar}
+                                className={i < testimonial.rating ? "text-yellow-400" : "text-gray-300"}
+                              />
+                            ))}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 max-w-xs truncate">
+                            {testimonial.comment}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              testimonial.approved
+                                ? "bg-green-100 text-green-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {testimonial.approved ? "Aprovado" : "Pendente"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            {!testimonial.approved && (
+                              <button
+                                onClick={() => handleApproveTestimonial(testimonial.id!)}
+                                className="text-green-600 hover:text-green-900"
+                                title="Aprovar"
+                              >
+                                <FontAwesomeIcon icon={faCheck} />
+                              </button>
+                            )}
+                            {testimonial.approved && (
+                              <button
+                                onClick={() => handleRejectTestimonial(testimonial.id!)}
+                                className="text-yellow-600 hover:text-yellow-900"
+                                title="Rejeitar"
+                              >
+                                <FontAwesomeIcon icon={faBan} />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleDeleteTestimonial(testimonial.id!)}
+                              className="text-red-600 hover:text-red-900"
+                              title="Excluir"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                        Nenhum depoimento encontrado
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

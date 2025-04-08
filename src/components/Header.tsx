@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import LogoDark from "../assets/logo-blue-dark.png";
 import LogoWhite from "../assets/logo-white.png";
@@ -9,6 +9,35 @@ import AppointmentModal from "./modal/ModalAgendamento";
 export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Função para controlar a visibilidade do header durante o scroll
+  const controlHeader = () => {
+    const currentScrollY = window.scrollY;
+    
+    // Se estamos rolando para baixo e não estamos no topo da página
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      setVisible(false);
+    } 
+    // Se estamos rolando para cima ou no topo da página
+    else {
+      setVisible(true);
+    }
+    
+    // Atualiza a posição do último scroll
+    setLastScrollY(currentScrollY);
+  };
+
+  useEffect(() => {
+    // Adicionar o evento de scroll somente no cliente
+    window.addEventListener("scroll", controlHeader);
+    
+    // Função de limpeza para remover o evento quando o componente é desmontado
+    return () => {
+      window.removeEventListener("scroll", controlHeader);
+    };
+  }, [lastScrollY]);
 
   // Função para rolar suavemente até a seção sem mudar a URL
   const scrollToSection = (id: string) => {
@@ -42,7 +71,9 @@ export function Header() {
       <header
         className={`w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center ${
           isMenuOpen ? "bg-primary-dark-blue" : "bg-primary-light-blue"
-        } z-40 transition-colors duration-300`}
+        } z-40 transition-all duration-300 ${
+          visible ? "translate-y-0 shadow-md" : "-translate-y-full"
+        }`}
       >
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
           <button
@@ -77,6 +108,12 @@ export function Header() {
               className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
             >
               Sobre
+            </button>
+            <button
+              onClick={() => scrollToSection("testimonials")}
+              className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
+            >
+              Depoimentos
             </button>
             <button
               onClick={() => scrollToSection("contact")}
@@ -159,6 +196,12 @@ export function Header() {
               className="py-3 w-full text-white font-normal text-xl"
             >
               Sobre
+            </button>
+            <button
+              onClick={() => scrollToSection("testimonials")}
+              className="py-3 w-full text-white font-normal text-xl"
+            >
+              Depoimentos
             </button>
             <button
               onClick={() => scrollToSection("contact")}
