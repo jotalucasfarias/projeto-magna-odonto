@@ -69,9 +69,6 @@ export default function ContatoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Aqui você pode implementar o envio do formulário para um serviço de backend
-    // Por enquanto vamos simular um envio com um timeout
     try {
       // Simulação de envio
       await new Promise(resolve => setTimeout(resolve, 1500));
