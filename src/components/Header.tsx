@@ -38,6 +38,11 @@ export function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Função para fechar o menu mobile
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <>
       <header
@@ -76,12 +81,12 @@ export function Header() {
             >
               Sobre
             </button>
-            <button
-              onClick={() => scrollToSection("contact")}
+            <Link 
+              href="/fale-conosco"
               className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
             >
-              Contato
-            </button>
+              Fale conosco
+            </Link>
           </nav>
 
           {/* Botão de agendamento para telas maiores */}
@@ -158,12 +163,13 @@ export function Header() {
             >
               Sobre
             </button>
-            <button
-              onClick={() => scrollToSection("contact")}
+            <Link 
+              href="/fale-conosco"
               className="py-3 w-full text-white font-normal text-xl"
+              onClick={closeMenu}
             >
-              Contato
-            </button>
+              Fale conosco
+            </Link>
 
             {/* Botão de agendar no menu mobile */}
             <button
