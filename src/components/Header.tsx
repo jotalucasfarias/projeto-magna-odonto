@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import LogoDark from "../assets/logo-blue-dark.png";
 import LogoWhite from "../assets/logo-white.png";
 import { Button } from "./ui/Button";
@@ -45,10 +46,7 @@ export function Header() {
         } z-40 transition-colors duration-300`}
       >
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
-          <button
-            onClick={() => scrollToSection("home")}
-            className="flex items-center z-50"
-          >
+          <Link href="/" className="flex items-center z-50">
             <Image
               src={isMenuOpen ? LogoWhite : LogoDark}
               alt="Magna Odonto Logo"
@@ -56,7 +54,7 @@ export function Header() {
               height={50}
               className="h-auto relative"
             />
-          </button>
+          </Link>
 
           {/* Menu de navegação para telas maiores */}
           <nav className="hidden md:flex items-center space-x-8">

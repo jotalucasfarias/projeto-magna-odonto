@@ -16,13 +16,13 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             {/* Logo */}
-            <div className="flex items-center">
+            <Link href="/" className="flex items-center">
               <Image
                 src={Logo}
                 className="max-w-60 mb-3"
                 alt="Logo Magna Odonto"
               />
-            </div>
+            </Link>
             <p className="mb-4">©2024 - Magna Odonto.</p>
             <p>Todos os direitos reservados.</p>
           </div>
