@@ -11,6 +11,8 @@ import {
 import AppointmentModal from "@/components/modal/ModalAgendamento";
 import { Button } from "@/components/ui/Button";
 import { toast, Toaster } from "react-hot-toast";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase/config";
 
 export default function ContatoPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,8 +72,12 @@ export default function ContatoPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Simulação de envio
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Salvar a mensagem no Firebase
+      await addDoc(collection(db, "messages"), {
+        ...formData,
+        status: "não-lido", // Status inicial da mensagem
+        createdAt: serverTimestamp(), // Adiciona timestamp
+      });
       
       toast.success("Mensagem enviada com sucesso! Em breve entraremos em contato.");
       setFormData({

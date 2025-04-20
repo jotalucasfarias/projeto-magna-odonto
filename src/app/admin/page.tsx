@@ -15,6 +15,7 @@ import {
   doc,
   where,
   QueryConstraint,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../lib/firebase/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +25,8 @@ import {
   faUser,
   faFileAlt,
   faEnvelope,
+  faCheckCircle,
+  faCircle,
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faPhone,
@@ -32,6 +35,9 @@ import {
   faChartBar,
   faFilter,
   faLock,
+  faEnvelopeOpen,
+  faMessage,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface AdminAppointment {
@@ -43,6 +49,19 @@ interface AdminAppointment {
   timeSlot: string;
   message: string;
   createdAt: string;
+}
+
+// Interface para as mensagens
+interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  status: "lido" | "não-lido";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createdAt: any;
 }
 
 export default function AdminDashboard() {
@@ -69,6 +88,11 @@ export default function AdminDashboard() {
   const [reportData, setReportData] = useState<AdminAppointment[]>([]);
   const [services, setServices] = useState<string[]>([]);
 
+  // Estados para a funcionalidade de mensagens
+  const [showMessagesPanel, setShowMessagesPanel] = useState(false);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [messageFilter, setMessageFilter] = useState("all"); // all, read, unread
+
   const auth = getAuth();
 
   useEffect(() => {
@@ -77,6 +101,7 @@ export default function AdminDashboard() {
       setIsLoading(false);
       if (user) {
         fetchAppointments();
+        fetchMessages(); // Buscar mensagens quando o usuário estiver autenticado
       }
     });
 
@@ -232,6 +257,69 @@ export default function AdminDashboard() {
     document.body.removeChild(link);
   };
 
+  // Função para buscar mensagens do formulário de contato
+  const fetchMessages = async () => {
+    try {
+      const messagesRef = collection(db, "messages");
+      const q = query(messagesRef, orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      const messagesData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ContactMessage[];
+
+      setMessages(messagesData);
+    } catch (err) {
+      console.error("Erro ao buscar mensagens:", err);
+    }
+  };
+
+  // Função para marcar mensagem como lida/não-lida
+  const toggleMessageStatus = async (id: string, currentStatus: string) => {
+    try {
+      const newStatus = currentStatus === "lido" ? "não-lido" : "lido";
+      await updateDoc(doc(db, "messages", id), {
+        status: newStatus,
+      });
+      await fetchMessages();
+    } catch (err) {
+      console.error("Erro ao atualizar status da mensagem:", err);
+    }
+  };
+
+  // Função para excluir mensagem
+  const handleDeleteMessage = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir esta mensagem?")) {
+      try {
+        await deleteDoc(doc(db, "messages", id));
+        await fetchMessages();
+      } catch (err) {
+        console.error("Erro ao deletar mensagem:", err);
+      }
+    }
+  };
+
+  // Filtrar mensagens conforme o status
+  const getFilteredMessages = () => {
+    if (messageFilter === "all") return messages;
+    return messages.filter(m => m.status === (messageFilter === "read" ? "lido" : "não-lido"));
+  };
+
+  // Formatar data de criação
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const formatMessageDate = (timestamp: any) => {
+    if (!timestamp) return "--";
+    
+    // Converter para data brasileira com horário
+    try {
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+    } catch (e) {
+      return "error" + e;
+    }
+  };
+
   // Componente para métricas resumidas
   const ReportSummary = () => {
     const totalAppointments = reportData.length;
@@ -375,14 +463,17 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* Tabs para navegação entre agendamentos e relatórios */}
+        {/* Tabs para navegação */}
         <div className="mb-6">
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               <button
-                onClick={() => setShowReportPanel(false)}
+                onClick={() => {
+                  setShowReportPanel(false);
+                  setShowMessagesPanel(false);
+                }}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  !showReportPanel
+                  !showReportPanel && !showMessagesPanel
                     ? "border-primary-blue text-primary-blue"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -390,9 +481,12 @@ export default function AdminDashboard() {
                 Agendamentos
               </button>
               <button
-                onClick={() => setShowReportPanel(true)}
+                onClick={() => {
+                  setShowReportPanel(true);
+                  setShowMessagesPanel(false);
+                }}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  showReportPanel
+                  showReportPanel && !showMessagesPanel
                     ? "border-primary-blue text-primary-blue"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
@@ -400,11 +494,26 @@ export default function AdminDashboard() {
                 <FontAwesomeIcon icon={faChartBar} className="mr-2" />
                 Relatórios
               </button>
+              <button
+                onClick={() => {
+                  setShowReportPanel(false);
+                  setShowMessagesPanel(true);
+                  fetchMessages(); // Atualizar mensagens ao clicar na aba
+                }}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  showMessagesPanel
+                    ? "border-primary-blue text-primary-blue"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                <FontAwesomeIcon icon={faMessage} className="mr-2" />
+                Mensagens
+              </button>
             </nav>
           </div>
         </div>
 
-        {!showReportPanel ? (
+        {!showReportPanel && !showMessagesPanel ? (
           // Painel de Agendamentos (existente)
           <div className="bg-white rounded-lg shadow p-6 mb-8">
             <div className="flex items-center gap-4 mb-6">
@@ -519,8 +628,8 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
-        ) : (
-          // Painel de Relatórios (novo)
+        ) : showReportPanel ? (
+          // Painel de Relatórios (existente)
           <div className="bg-white rounded-lg shadow p-6 mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
@@ -701,6 +810,114 @@ export default function AdminDashboard() {
               <div className="text-center py-10 text-gray-500">
                 Nenhum resultado encontrado. Ajuste os filtros e tente
                 novamente.
+              </div>
+            )}
+          </div>
+        ) : (
+          // Painel de Mensagens (novo)
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+              Mensagens do Formulário de Contato
+            </h2>
+
+            {/* Filtros para mensagens */}
+            <div className="flex items-center gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Filtrar por Status
+                </label>
+                <select
+                  value={messageFilter}
+                  onChange={(e) => setMessageFilter(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue"
+                >
+                  <option value="all">Todas</option>
+                  <option value="unread">Não lidas</option>
+                  <option value="read">Lidas</option>
+                </select>
+              </div>
+              <button
+                onClick={fetchMessages}
+                className="mt-6 px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue"
+              >
+                Atualizar
+              </button>
+            </div>
+
+            {/* Lista de mensagens */}
+            {getFilteredMessages().length > 0 ? (
+              <div className="space-y-4">
+                {getFilteredMessages().map((message) => (
+                  <div 
+                    key={message.id} 
+                    className={`border rounded-lg p-4 ${
+                      message.status === "não-lido" 
+                        ? "bg-blue-50 border-blue-200" 
+                        : "bg-white border-gray-200"
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2">
+                        <FontAwesomeIcon 
+                          icon={message.status === "não-lido" ? faCircle : faCheckCircle} 
+                          className={`${
+                            message.status === "não-lido" ? "text-blue-500" : "text-green-500"
+                          }`} 
+                        />
+                        <h3 className="text-lg font-semibold">{message.subject}</h3>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => toggleMessageStatus(message.id, message.status)}
+                          className={`p-1 rounded ${
+                            message.status === "não-lido" 
+                              ? "text-green-600 hover:bg-green-100" 
+                              : "text-blue-600 hover:bg-blue-100"
+                          }`}
+                          title={message.status === "não-lido" ? "Marcar como lida" : "Marcar como não lida"}
+                        >
+                          <FontAwesomeIcon icon={message.status === "não-lido" ? faCheck : faEnvelopeOpen} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteMessage(message.id)}
+                          className="p-1 text-red-600 hover:bg-red-100 rounded"
+                          title="Excluir mensagem"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+                      <div>
+                        <p className="text-sm text-gray-500">De:</p>
+                        <p className="font-medium">{message.name}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Email:</p>
+                        <p className="font-medium">{message.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Telefone:</p>
+                        <p className="font-medium">{message.phone || "Não informado"}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Data:</p>
+                        <p className="font-medium">{formatMessageDate(message.createdAt)}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                      <p className="text-sm text-gray-500 mb-1">Mensagem:</p>
+                      <p className="whitespace-pre-line">{message.message}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-10 text-gray-500">
+                Nenhuma mensagem encontrada. Ajuste os filtros ou aguarde novas mensagens.
               </div>
             )}
           </div>
