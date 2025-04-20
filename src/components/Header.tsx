@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LogoDark from "../assets/logo-blue-dark.png";
+import LogoDark from "../assets/logo-dark.png";
 import LogoWhite from "../assets/logo-white.png";
 import { Button } from "./ui/Button";
 import AppointmentModal from "./modal/ModalAgendamento";
