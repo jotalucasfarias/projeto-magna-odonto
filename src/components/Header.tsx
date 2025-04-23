@@ -52,6 +52,11 @@ export function Header() {
 
   // Função para verificar se uma seção é a ativa
   const isActive = (section: string) => {
+    // Caso especial para a página "Fale conosco"
+    if (section === "fale-conosco" && pathname === "/fale-conosco") {
+      return true;
+    }
+    
     // Se não estiver na home page, não destaque nenhuma seção
     if (!isHomePage) return false;
     return section === activeSection;
@@ -59,6 +64,14 @@ export function Header() {
 
   // Função para navegar para seções
   const navigateToSection = (id: string) => {
+    if (id === "services") {
+      // Redirecionar para a página de serviços
+      router.push("/servicos");
+      // Fechar o menu se estiver aberto
+      if (isMenuOpen) setIsMenuOpen(false);
+      return;
+    }
+    
     if (isHomePage) {
       // Se estiver na página principal, apenas role para a seção
       const section = document.getElementById(id);
@@ -149,7 +162,11 @@ export function Header() {
             </button>
             <Link 
               href="/fale-conosco"
-              className="p-[27px] flex items-center border-b-2 border-transparent hover:border-primary-dark-blue font-normal text-primary-dark-blue"
+              className={`p-[27px] flex items-center border-b-2 ${
+                isActive("fale-conosco")
+                  ? "border-primary-dark-blue font-bold" 
+                  : "border-transparent hover:border-primary-dark-blue font-normal"
+              } text-primary-dark-blue`}
             >
               Fale conosco
             </Link>
@@ -231,7 +248,7 @@ export function Header() {
             </button>
             <Link 
               href="/fale-conosco"
-              className="py-3 w-full text-white font-normal text-xl"
+              className={`py-3 w-full text-white ${isActive("fale-conosco") ? "font-bold" : "font-normal"} text-xl`}
               onClick={closeMenu}
             >
               Fale conosco
