@@ -11,7 +11,7 @@ export const services = [
   {
     title: "Implantes Dentários",
     description:
-      "Substitua dentes perdidos com implantes fixos e seguros, recuperando a funcionalidade e o visual natural do seu sorriso.",
+      "Substitua dentes perdidos com implantes fixos e seguros, recuperando de forma excepcional a funcionalidade e o visual natural do seu sorriso.",
     icon: faCheck,
   },
   {

@@ -22,6 +22,8 @@ export function ServiceCard({ title, description }: ServiceCardProps) {
 
       {/* Descrição do serviço */}
       <p className="text-gray-paragraph mb-4">{description}</p>
+
+      
     </div>
   );
 }

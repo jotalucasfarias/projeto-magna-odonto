@@ -15,6 +15,7 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const isHomePage = pathname === "/";
+  const isServicosPage = pathname === "/servicos" || pathname.startsWith("/servicos/");
 
   // Detectar seção ativa quando estiver na página inicial
   useEffect(() => {
@@ -54,6 +55,11 @@ export function Header() {
   const isActive = (section: string) => {
     // Caso especial para a página "Fale conosco"
     if (section === "fale-conosco" && pathname === "/fale-conosco") {
+      return true;
+    }
+    
+    // Caso especial para a página "Serviços"
+    if (section === "services" && isServicosPage) {
       return true;
     }
     
