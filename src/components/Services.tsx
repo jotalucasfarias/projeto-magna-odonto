@@ -1,6 +1,6 @@
 "use client";
 import { ServiceCard } from "./ui/ServiceCard";
-import { services } from "@/data/ServicesData";
+import { detailedServices } from "@/data/ServicesDetailedData";
 
 export function Services() {
   return (
@@ -16,11 +16,13 @@ export function Services() {
 
         {/* Grid para exibição dos cards de serviços */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
+          {/* Mapeia os serviços detalhados e renderiza um card para cada um deles */}
+          {detailedServices.map((service) => (
             <ServiceCard
-              key={index}
+              key={service.id}
+              slug={service.slug}
               title={service.title}
-              description={service.description}
+              shortDescription={service.shortDescription}
             />
           ))}
         </div>
