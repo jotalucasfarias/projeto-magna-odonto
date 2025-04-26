@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { appointmentService } from "@/services/appointment";
 import { formatarTelefone } from "../utils/formatadores";
@@ -20,18 +21,31 @@ export const useFormularioAgendamento = () => {
   });
   const [erros, setErros] = useState<ErrosValidacao>({});
   const [dataSelecionada, setDataSelecionada] = useState<string>("");
-  const [camposModificados, setCamposModificados] = useState<
-    Record<string, boolean>
-  >({});
+  const [camposModificados, setCamposModificados] = useState<Record<string, boolean>>({});
 
-  /**
-   * Verifica campos quando dadosFormulario muda
-   */
+  /** Valida um campo específico */
+  const validarCampoFormulario = useCallback((campo: string): boolean => {
+    const erro = validarCampo(campo, dadosFormulario);
+
+    setErros(prev => {
+      const novosErros = { ...prev };
+      if (erro) {
+        novosErros[campo as keyof ErrosValidacao] = erro;
+      } else {
+        delete novosErros[campo as keyof ErrosValidacao];
+      }
+      return novosErros;
+    });
+
+    return !erro;
+  }, [dadosFormulario]);
+
+  /** Verifica campos quando dadosFormulario ou camposModificados mudam */
   useEffect(() => {
     Object.keys(camposModificados)
-      .filter((campo) => camposModificados[campo])
-      .forEach((campo) => validarCampoFormulario(campo));
-  }, [dadosFormulario]);
+      .filter(campo => camposModificados[campo])
+      .forEach(campo => validarCampoFormulario(campo));
+  }, [camposModificados, validarCampoFormulario]);
 
   /** Manipula mudanças nos campos do formulário */
   const handleChange = (
@@ -45,44 +59,26 @@ export const useFormularioAgendamento = () => {
       setDataSelecionada(value);
     }
 
-    setCamposModificados({ ...camposModificados, [name]: true });
+    setCamposModificados(prev => ({ ...prev, [name]: true }));
 
     if (name === "phone") {
-      setDadosFormulario({
-        ...dadosFormulario,
+      setDadosFormulario(prev => ({
+        ...prev,
         [name]: formatarTelefone(value),
-      });
+      }));
     } else {
-      setDadosFormulario({ ...dadosFormulario, [name]: value });
+      setDadosFormulario(prev => ({ ...prev, [name]: value }));
     }
-  };
-
-  /** Valida um campo específico */
-  const validarCampoFormulario = (campo: string): boolean => {
-    const erro = validarCampo(campo, dadosFormulario);
-
-    setErros((prev) => {
-      const novosErros = { ...prev };
-      if (erro) {
-        novosErros[campo as keyof ErrosValidacao] = erro;
-      } else {
-        delete novosErros[campo as keyof ErrosValidacao];
-      }
-      return novosErros;
-    });
-
-    return !erro;
   };
 
   /** Marca um campo como modificado e o valida */
   const handleBlur = (campo: string) => {
-    setCamposModificados({ ...camposModificados, [campo]: true });
+    setCamposModificados(prev => ({ ...prev, [campo]: true }));
     validarCampoFormulario(campo);
   };
 
   /** Valida todos os campos da etapa atual */
   const validarEtapaAtual = (): boolean => {
-    // Campos a serem validados em cada etapa
     const camposParaValidar =
       etapa === 1
         ? ["name", "phone"]
@@ -90,22 +86,17 @@ export const useFormularioAgendamento = () => {
         ? ["service", "date", "timeSlot"]
         : [];
 
-    // Marca os campos como modificados
     const novosCamposModificados = { ...camposModificados };
-    camposParaValidar.forEach((campo) => {
+    camposParaValidar.forEach(campo => {
       novosCamposModificados[campo] = true;
     });
     setCamposModificados(novosCamposModificados);
 
-    // Valida os campos da etapa atual
     const errosEtapa = validarCamposEtapa(etapa, dadosFormulario);
     setErros(errosEtapa);
 
-    // Verifica se há erros
     const temErros = Object.keys(errosEtapa).length > 0;
-
     if (temErros) {
-      // Exibe o primeiro erro encontrado
       const primeiroErro = Object.values(errosEtapa)[0];
       if (primeiroErro) {
         toast.error(primeiroErro);
@@ -115,27 +106,26 @@ export const useFormularioAgendamento = () => {
     return !temErros;
   };
 
-  // Avança para a próxima etapa 
+  // Avança para a próxima etapa
   const avancarEtapa = () => {
     if (validarEtapaAtual() && etapa < 3) {
-      setEtapa(etapa + 1);
+      setEtapa(prev => prev + 1);
     }
   };
 
-   //Retorna para a etapa anterior
+  // Retorna para a etapa anterior
   const voltarEtapa = () => {
     if (etapa > 1) {
-      setEtapa(etapa - 1);
+      setEtapa(prev => prev - 1);
     }
   };
 
-  // Submete o formulário 
+  // Submete o formulário
   const enviarFormulario = async () => {
     if (!validarEtapaAtual()) return;
 
     setCarregando(true);
     try {
-      // Verifica novamente se o horário está disponível
       const disponivel = await appointmentService.checkAvailability(
         dadosFormulario.date,
         dadosFormulario.timeSlot
@@ -147,7 +137,10 @@ export const useFormularioAgendamento = () => {
         return;
       }
 
-      await appointmentService.createAppointment(dadosFormulario);
+      await appointmentService.createAppointment({
+        ...dadosFormulario,
+        createdAt: new Date(),
+      });
       setSucesso(true);
       toast.success("Consulta agendada com sucesso!");
     } catch (error) {
@@ -160,8 +153,8 @@ export const useFormularioAgendamento = () => {
 
   // Seleciona horário
   const selecionarHorario = (horario: string) => {
-    setDadosFormulario({ ...dadosFormulario, timeSlot: horario });
-    setCamposModificados({ ...camposModificados, timeSlot: true });
+    setDadosFormulario(prev => ({ ...prev, timeSlot: horario }));
+    setCamposModificados(prev => ({ ...prev, timeSlot: true }));
   };
 
   return {

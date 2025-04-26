@@ -1,3 +1,4 @@
+
 import { db } from "@/lib/firebase/config";
 import { Appointment } from "@/lib/types/appointment";
 import {
@@ -60,7 +61,7 @@ class AppointmentService {
   }
 
   // Cria um novo agendamento
-  async createAppointment(appointmentData: any): Promise<string> {
+  async createAppointment(appointmentData: Appointment): Promise<string> {
     try {
       // Prepara os dados para salvar no Firebase
       const appointment: Omit<Appointment, "id"> = {
