@@ -12,9 +12,9 @@ import {
 export function Footer() {
   return (
     <footer className="bg-blue-500 text-white py-8">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-0 ">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-6">
+        <div className="flex flex-col lg:flex-row justify-between items-center">
+          <div className="mb-4 lg:mb-0">
             {/* Logo */}
             <Link href="/" className="flex items-center">
               <Image
@@ -63,7 +63,7 @@ export function Footer() {
         </div>
 
         {/* Copyright - Espaço para uma mensagem de copyright */}
-        <div className="mt-8 text-sm text-center md:text-left"></div>
+        <div className="mt-8 text-sm text-center lg:text-left"></div>
       </div>
     </footer>
   );

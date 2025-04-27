@@ -135,7 +135,7 @@ export function Header() {
           </Link>
 
           {/* Menu de navegação para telas maiores */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8">
             <button
               onClick={() => navigateToSection("home")}
               className={`p-[27px] flex items-center border-b-2 ${
@@ -181,12 +181,12 @@ export function Header() {
           {/* Botão de agendamento para telas maiores */}
           <Button
             text="AGENDAR CONSULTA"
-            className="hidden md:block"
+            className="hidden lg:block"
             onClick={openModal}
           />
 
           {/* Botão de menu para dispositivos móveis */}
-          <button className="md:hidden z-50" onClick={toggleMenu}>
+          <button className="lg:hidden z-50" onClick={toggleMenu}>
             {isMenuOpen ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -229,7 +229,7 @@ export function Header() {
       <aside
         className={`fixed inset-0 bg-primary-dark-blue transition-transform duration-300 ease-in-out ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
-        } md:hidden z-30`}
+        } lg:hidden z-30`}
       >
         <div className="container mx-auto px-4 py-20">
           {/* Items do menu mobile */}

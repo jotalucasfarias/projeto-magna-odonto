@@ -17,14 +17,14 @@ export function HeroBanner() {
   };
 
   return (
-    <section id="home" className="relative w-full bg-primary-light-blue">
-      <div className="container mx-auto px-4 pt-7 flex flex-col md:flex-row items-center justify-between max-w-7xl">
+    <section id="home" className="relative w-full bg-primary-light-blue overflow-hidden">
+      <div className="container mx-auto px-4 py-8 lg:py-12 flex flex-col lg:flex-row items-center justify-between max-w-7xl relative">
         {/* Texto à esquerda */}
-        <div className="w-full md:w-1/2 text-center md:text-left">
-          <p className="mb-12 uppercase font-bold text-primary-dark-blue">
+        <div className="w-full lg:w-1/2 text-center lg:text-left z-10">
+          <p className="mb-8 lg:mb-12 uppercase font-bold text-primary-dark-blue">
             Boas-Vindas a Magna Odonto <span className="ml-1">🌟</span>
           </p>
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-headline mb-6 leading-tight">
+          <h1 className="text-3xl lg:text-5xl font-bold text-gray-headline mb-6 leading-tight">
             Cuidados odontológicos <br /> simplificados para todos
           </h1>
           <p className="text-gray-paragraph text-lg mb-8">
@@ -38,13 +38,17 @@ export function HeroBanner() {
         </div>
 
         {/* Imagem à direita em telas maiores */}
-        <div className="w-full lg:w-1/2 flex justify-center md:justify-end">
-          <Image
-            src={Woman}
-            alt="Paciente sorrindo em atendimento odontológico"
-            height={540}
-            className="rounded-lg object-cover"
-          />
+        <div className="w-full lg:w-1/2 flex justify-center lg:justify-end mt-8 lg:mt-0 lg:absolute lg:right-4 lg:bottom-0 lg:h-full">
+          <div className="relative w-full max-w-md lg:h-full flex items-end">
+            <Image
+              src={Woman}
+              alt="Paciente sorrindo em atendimento odontológico"
+              width={540}
+              height={540}
+              priority
+              className="rounded-lg object-contain lg:object-bottom w-auto max-h-[540px]"
+            />
+          </div>
         </div>
       </div>
 
