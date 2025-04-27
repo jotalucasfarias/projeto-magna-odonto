@@ -18,7 +18,7 @@ export function HeroBanner() {
 
   return (
     <section id="home" className="relative w-full bg-primary-light-blue overflow-hidden">
-      <div className="container mx-auto px-4 py-8 lg:py-12 flex flex-col lg:flex-row items-center justify-between max-w-7xl relative">
+      <div className="container mx-auto px-4 pt-8 lg:py-12 flex flex-col lg:flex-row items-center justify-between max-w-7xl relative">
         {/* Texto à esquerda */}
         <div className="w-full lg:w-1/2 text-center lg:text-left z-10">
           <p className="mb-8 lg:mb-12 uppercase font-bold text-primary-dark-blue">
@@ -39,14 +39,14 @@ export function HeroBanner() {
 
         {/* Imagem à direita em telas maiores */}
         <div className="w-full lg:w-1/2 flex justify-center lg:justify-end mt-8 lg:mt-0 lg:absolute lg:right-4 lg:bottom-0 lg:h-full">
-          <div className="relative w-full max-w-md lg:h-full flex items-end">
+          <div className="relative w-full max-w-md flex items-end justify-center h-full">
             <Image
               src={Woman}
               alt="Paciente sorrindo em atendimento odontológico"
               width={540}
               height={540}
               priority
-              className="rounded-lg object-contain lg:object-bottom w-auto max-h-[540px]"
+              className="rounded-lg object-contain object-bottom w-auto max-h-[540px]"
             />
           </div>
         </div>
