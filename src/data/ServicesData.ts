@@ -38,4 +38,16 @@ export const services = [
       "Aprimore o seu sorriso com lentes de contato dentais, proporcionando um visual alinhado e harmonioso de forma prática e segura.",
     icon: faCheck,
   },
+  {
+    title: "Avaliação Odontológica",
+    description:
+      "Cuide da saúde dos seus dentes e gengivas com uma avaliação completa e focada na prevenção, garantindo bem-estar e tranquilidade.",
+    icon: faCheck,
+  },
+  {
+    title: "Gengivoplastia",
+    description:
+      "Harmonize seu sorriso com a gengivoplastia, um procedimento que melhora a proporção entre dentes e gengivas de forma segura e eficaz.",
+    icon: faCheck,
+  },
 ];

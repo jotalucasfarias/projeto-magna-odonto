@@ -1,10 +1,10 @@
 import { StaticImageData } from "next/image";
 import ortodontiaImg from "@/assets/services/ortodontia.png";
 import implantesImg from "@/assets/services/implantes.png";
-import clinicaGeralImg from "@/assets/services/clinica-geral.png";
+import avaliacaoImg from "@/assets/services/avaliacao.png";
 import endodontiaImg from "@/assets/services/endodontia.png";
 import protesesImg from "@/assets/services/proteses.png";
-import lentesImg from "@/assets/services/lentes.png";
+import gengivoplastiaImg from "@/assets/services/gengivoplastia.png";
 
 export interface FAQ {
   question: string;
@@ -124,14 +124,14 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Implantes dentários de alta qualidade em Porto Velho. Recupere seu sorriso com uma solução permanente, natural e confortável na Magna Odonto.",
   },
   {
-    id: "clinica-geral",
-    title: "Clínica Geral",
-    slug: "clinica-geral",
+    id: "avaliacao-odontologica",
+    title: "Avaliação Odontológica",
+    slug: "avaliacao-odontologica",
     shortDescription:
-      "Cuide da saúde dos seus dentes e gengivas com atendimento completo e focado na prevenção, garantindo bem-estar e tranquilidade.",
+      "Cuide da saúde dos seus dentes e gengivas com uma avaliação completa e focada na prevenção, garantindo bem-estar e tranquilidade.",
     longDescription:
-      "A Odontologia Clínica Geral é a base para a saúde bucal, abrangendo diagnóstico, prevenção e tratamento das doenças mais comuns que afetam dentes e gengivas. Inclui procedimentos como limpezas profissionais, restaurações, tratamento de gengivite e diagnóstico de outras condições. Na Magna Odonto, nossos profissionais são capacitados para realizar uma avaliação completa da sua saúde bucal, identificando problemas existentes ou potenciais e propondo o tratamento mais adequado para cada caso.",
-    image: clinicaGeralImg,
+      "A Avaliação Odontológica é a base para a saúde bucal, abrangendo diagnóstico, prevenção e planejamento de tratamento das doenças mais comuns que afetam dentes e gengivas. Inclui procedimentos como exame clínico completo, análise radiográfica quando necessária, avaliação periodontal e diagnóstico de outras condições. Na Magna Odonto, nossos profissionais são capacitados para realizar uma avaliação completa da sua saúde bucal, identificando problemas existentes ou potenciais e propondo o tratamento mais adequado para cada caso.",
+    image: avaliacaoImg,
     benefits: [
       {
         title: "Prevenção de problemas bucais",
@@ -168,7 +168,7 @@ export const detailedServices: DetailedService[] = [
         answer: "Procure atendimento imediato em casos de dor intensa, trauma dental (dente quebrado ou deslocado), inchaço significativo, sangramento persistente ou qualquer situação que cause desconforto severo.",
       },
     ],
-    metaDescription: "Serviços de odontologia geral em Porto Velho com foco em prevenção e tratamentos conservadores. Mantenha sua saúde bucal em dia na Magna Odonto.",
+    metaDescription: "Serviços de avaliação odontológica em Porto Velho com foco em prevenção e planejamento de tratamentos. Mantenha sua saúde bucal em dia na Magna Odonto.",
   },
   {
     id: "endodontia",
@@ -265,51 +265,47 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Próteses dentárias personalizadas e de alta qualidade em Porto Velho. Recupere a função e estética do seu sorriso com conforto na Magna Odonto.",
   },
   {
-    id: "lentes-de-contato",
-    title: "Lentes de Contato",
-    slug: "lentes-de-contato",
+    id: "gengivoplastia",
+    title: "Gengivoplastia",
+    slug: "gengivoplastia",
     shortDescription:
-      "Aprimore o seu sorriso com lentes de contato dentais, proporcionando um visual alinhado e harmonioso de forma prática e segura.",
+      "Harmonize seu sorriso com a gengivoplastia, um procedimento que melhora a proporção entre dentes e gengivas de forma segura e eficaz.",
     longDescription:
-      "As lentes de contato dentais são facetas ultrafinas de porcelana ou resina que são aplicadas na superfície frontal dos dentes para corrigir problemas estéticos como descoloração, pequenas imperfeições, diastemas (espaços entre os dentes) e desalinhamentos leves. Diferente das técnicas tradicionais, as lentes de contato exigem mínimo ou nenhum desgaste do dente natural, sendo uma opção mais conservadora. Na Magna Odonto, realizamos um planejamento digital do sorriso para visualizar o resultado final antes do procedimento, garantindo que o resultado atenda perfeitamente às suas expectativas.",
-    image: lentesImg,
+      "A Gengivoplastia é um procedimento estético e funcional que visa remodelar o contorno gengival, corrigindo o sorriso gengival (excesso de gengiva ao sorrir) e harmonizando a proporção entre dentes e gengivas. É indicada para pacientes com exposição excessiva da gengiva, assimetrias gengivais ou formato irregular das gengivas. Na Magna Odonto, realizamos a gengivoplastia com técnicas minimamente invasivas e avançadas, proporcionando resultados naturais e estéticos, com recuperação rápida e confortável.",
+    image: gengivoplastiaImg,
     benefits: [
       {
-        title: "Transformação estética imediata",
-        description: "Resultado rápido e impressionante, transformando completamente a aparência do sorriso em poucas sessões.",
+        title: "Harmonização do sorriso",
+        description: "Melhora a proporção entre dentes e gengivas, criando um sorriso mais estético e harmonioso.",
       },
       {
         title: "Procedimento minimamente invasivo",
-        description: "Preservação da estrutura dental natural, com pouco ou nenhum desgaste do esmalte original.",
+        description: "Técnica moderna que proporciona resultados significativos com mínimo desconforto e tempo de recuperação reduzido.",
       },
       {
-        title: "Resistência a manchas",
-        description: "Material cerâmico resistente a manchas de café, vinho, cigarro e outros agentes que normalmente mancham os dentes.",
-      },
-      {
-        title: "Aparência natural",
-        description: "Resultado altamente estético e personalizado, com translucidez semelhante aos dentes naturais.",
+        title: "Aumento da autoestima",
+        description: "Um sorriso mais proporcional e bonito contribui significativamente para a autoconfiança e bem-estar social.",
       },
     ],
     faqs: [
       {
-        question: "As lentes de contato dental são permanentes?",
-        answer: "As lentes de contato dental são consideradas um tratamento semi-permanente. Com os cuidados adequados, podem durar de 10 a 15 anos antes de precisarem ser substituídas.",
+        question: "A gengivoplastia é um procedimento doloroso?",
+        answer: "O procedimento é realizado com anestesia local, garantindo conforto durante sua execução. Após o procedimento, pode haver um desconforto leve que é facilmente controlado com medicação prescrita pelo dentista.",
       },
       {
-        question: "Qualquer pessoa pode colocar lentes de contato dental?",
-        answer: "O procedimento é indicado para pessoas com dentes razoavelmente alinhados e saudáveis. Pacientes com problemas periodontais graves, bruxismo intenso ou grandes desalinhamentos podem precisar de tratamentos prévios ou alternativas. Uma avaliação detalhada determinará se você é um bom candidato.",
+        question: "Quanto tempo leva para recuperação após a gengivoplastia?",
+        answer: "A recuperação completa geralmente ocorre em 1 a 2 semanas. Os primeiros dias podem apresentar leve inchaço e sensibilidade, mas a maioria dos pacientes retorna às atividades normais em 2 a 3 dias.",
       },
       {
-        question: "O procedimento é doloroso?",
-        answer: "O procedimento é geralmente indolor. Como há mínima ou nenhuma remoção de estrutura dental, a maioria dos pacientes não necessita de anestesia. Alguns podem sentir leve sensibilidade temporária após a colocação.",
+        question: "Quem é candidato à gengivoplastia?",
+        answer: "São candidatos à gengivoplastia pessoas com sorriso gengival (exposição excessiva da gengiva ao sorrir), assimetrias gengivais ou formato irregular das gengivas, e que possuam boa saúde bucal. Uma avaliação clínica determinará se você é um bom candidato ao procedimento.",
       },
       {
-        question: "Como devo cuidar das minhas lentes de contato dental?",
-        answer: "Os cuidados são semelhantes aos dos dentes naturais: escovação regular, uso de fio dental e consultas periódicas ao dentista. Recomenda-se evitar morder alimentos muito duros e usar protetor bucal durante a prática de esportes de contato.",
+        question: "Como devo cuidar da minha gengiva após o procedimento?",
+        answer: "Após a gengivoplastia, recomenda-se evitar alimentos duros ou muito condimentados nos primeiros dias, realizar higiene bucal cuidadosa seguindo as orientações do dentista, e usar bochechos específicos quando prescritos. É essencial comparecer às consultas de acompanhamento para garantir a boa cicatrização.",
       },
     ],
-    metaDescription: "Lentes de contato dental para um sorriso perfeito em Porto Velho. Transformação estética minimimamente invasiva e resultados naturais na Magna Odonto.",
+    metaDescription: "Gengivoplastia em Porto Velho para harmonização do sorriso. Corrija o excesso gengival e obtenha um sorriso mais estético e proporcional na Magna Odonto.",
   },
 ];
 

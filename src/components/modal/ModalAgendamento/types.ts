@@ -25,10 +25,10 @@ export interface PropsModalAgendamento {
 export const SERVICOS = [
   "Ortodontia",
   "Implantes Dentários",
-  "Clínica Geral",
+  "Avaliação Odontológica",
   "Endodontia",
   "Próteses Dentárias",
-  "Lentes de Contato",
+  "Gengivoplastia",
 ] as const;
 
 export type TipoServico = typeof SERVICOS[number];
