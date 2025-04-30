@@ -8,10 +8,9 @@ import { Toaster } from "react-hot-toast";
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "700"],
-  display: "swap",  // Improved font loading
+  display: "swap",  
 });
 
-// You can update this once you have your domain
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
 
 export const metadata: Metadata = {
