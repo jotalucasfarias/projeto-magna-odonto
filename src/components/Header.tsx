@@ -142,7 +142,7 @@ export function Header() {
                 isActive("home")
                   ? "border-primary-dark-blue font-bold" 
                   : "border-transparent hover:border-primary-dark-blue font-normal"
-              } text-primary-dark-blue`}
+              } text-primary-dark-blue cursor-pointer`}
             >
               Início
             </button>
@@ -152,7 +152,7 @@ export function Header() {
                 isActive("services")
                   ? "border-primary-dark-blue font-bold" 
                   : "border-transparent hover:border-primary-dark-blue font-normal"
-              } text-primary-dark-blue`}
+              } text-primary-dark-blue cursor-pointer`}
             >
               Serviços
             </button>
@@ -162,7 +162,7 @@ export function Header() {
                 isActive("about")
                   ? "border-primary-dark-blue font-bold" 
                   : "border-transparent hover:border-primary-dark-blue font-normal"
-              } text-primary-dark-blue`}
+              } text-primary-dark-blue cursor-pointer`}
             >
               Sobre
             </button>
@@ -172,7 +172,7 @@ export function Header() {
                 isActive("fale-conosco")
                   ? "border-primary-dark-blue font-bold" 
                   : "border-transparent hover:border-primary-dark-blue font-normal"
-              } text-primary-dark-blue`}
+              } text-primary-dark-blue cursor-pointer`}
             >
               Fale conosco
             </Link>
@@ -236,25 +236,25 @@ export function Header() {
           <nav className="flex flex-col items-center space-y-6 text-center">
             <button
               onClick={() => navigateToSection("home")}
-              className={`py-3 w-full text-white ${isActive("home") ? "font-bold" : "font-normal"} text-xl`}
+              className={`py-3 w-full text-white ${isActive("home") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
             >
               Início
             </button>
             <button
               onClick={() => navigateToSection("services")}
-              className={`py-3 w-full text-white ${isActive("services") ? "font-bold" : "font-normal"} text-xl`}
+              className={`py-3 w-full text-white ${isActive("services") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
             >
               Serviços
             </button>
             <button
               onClick={() => navigateToSection("about")}
-              className={`py-3 w-full text-white ${isActive("about") ? "font-bold" : "font-normal"} text-xl`}
+              className={`py-3 w-full text-white ${isActive("about") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
             >
               Sobre
             </button>
             <Link 
               href="/fale-conosco"
-              className={`py-3 w-full text-white ${isActive("fale-conosco") ? "font-bold" : "font-normal"} text-xl`}
+              className={`py-3 w-full text-white ${isActive("fale-conosco") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
               onClick={closeMenu}
             >
               Fale conosco
