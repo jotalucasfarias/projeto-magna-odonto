@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: "Clínica Magna Odonto | Tratamentos Odontológicos em Porto Velho",
     template: "%s | Clínica Magna Odonto"
   },
-  description: "Clínica odontológica em Porto Velho oferecendo tratamentos completos com profissionais qualificados. Agende sua consulta hoje!",
+  description: "Tratamentos odontológicos completos em Porto Velho, com excelência e conforto. Nossa clínica oferece uma variedade de serviços para cuidar da sua saúde bucal, desde consultas de rotina até tratamentos especializados. Agende sua consulta hoje mesmo!",
   keywords: "odontologia, dentista Porto Velho, ortodontia, implantes dentários, clínica odontológica, tratamento dentário, Magna Odonto, consultório dentário Porto Velho, saúde bucal",
   authors: [{ name: "Magna Odonto" }],
   creator: "Clínica Magna Odonto",
@@ -30,14 +30,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    // URL will be properly set when domain is available
     url: siteUrl,
     title: "Clínica Magna Odonto | Tratamentos Odontológicos em Porto Velho",
     description: "Tratamentos odontológicos completos em Porto Velho com excelência e conforto. Agende sua consulta!",
     siteName: "Clínica Magna Odonto",
     images: [
       {
-        url: `${siteUrl}/og-image.png`, // Alterado de jpg para png
+        url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
         alt: "Clínica Magna Odonto em Porto Velho"
@@ -48,16 +47,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Clínica Magna Odonto | Tratamentos Odontológicos em Porto Velho",
     description: "Tratamentos odontológicos completos em Porto Velho com excelência e conforto. Agende sua consulta!",
-    images: [`${siteUrl}/og-image.png`], // Alterado de jpg para png
+    images: [`${siteUrl}/og-image.png`], 
   },
   verification: {
-    google: "verification_token", // Replace with your Google verification token when available
+    google: "verification_token",
   },
-  // Don't specify canonical until you have a domain
-  // alternates: {
-  //   canonical: "your-domain-when-available",
-  // },
 };
+
 
 export default function RootLayout({
   children,
