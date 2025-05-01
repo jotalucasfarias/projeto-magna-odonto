@@ -17,7 +17,7 @@ export interface ServiceBenefit {
 }
 
 export interface DetailedService {
-  id: string;
+  id: number;
   title: string;
   slug: string;
   shortDescription: string;
@@ -30,7 +30,7 @@ export interface DetailedService {
 
 export const detailedServices: DetailedService[] = [
   {
-    id: "ortodontia",
+    id: 1,
     title: "Ortodontia",
     slug: "ortodontia",
     shortDescription:
@@ -77,7 +77,7 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Tratamento ortodôntico em Porto Velho com técnicas modernas e opções estéticas. Corrija a posição dos dentes e obtenha um sorriso harmonioso na Magna Odonto.",
   },
   {
-    id: "implantes-dentarios",
+    id: 2,
     title: "Implantes Dentários",
     slug: "implantes-dentarios",
     shortDescription:
@@ -124,7 +124,7 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Implantes dentários de alta qualidade em Porto Velho. Recupere seu sorriso com uma solução permanente, natural e confortável na Magna Odonto.",
   },
   {
-    id: "avaliacao-odontologica",
+    id: 3,
     title: "Avaliação Odontológica",
     slug: "avaliacao-odontologica",
     shortDescription:
@@ -171,7 +171,7 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Serviços de avaliação odontológica em Porto Velho com foco em prevenção e planejamento de tratamentos. Mantenha sua saúde bucal em dia na Magna Odonto.",
   },
   {
-    id: "endodontia",
+    id: 4,
     title: "Endodontia (Canal)",
     slug: "endodontia",
     shortDescription:
@@ -218,7 +218,7 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Tratamento de canal em Porto Velho com técnicas modernas e sem dor. Preserve seu dente natural e alivie a dor na Magna Odonto.",
   },
   {
-    id: "proteses-dentarias",
+    id: 5,
     title: "Próteses Dentárias",
     slug: "proteses-dentarias",
     shortDescription:
@@ -265,7 +265,7 @@ export const detailedServices: DetailedService[] = [
     metaDescription: "Próteses dentárias personalizadas e de alta qualidade em Porto Velho. Recupere a função e estética do seu sorriso com conforto na Magna Odonto.",
   },
   {
-    id: "gengivoplastia",
+    id: 6,
     title: "Gengivoplastia",
     slug: "gengivoplastia",
     shortDescription:
