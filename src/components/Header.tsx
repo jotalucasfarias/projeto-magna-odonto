@@ -106,6 +106,10 @@ export function Header() {
       if (section) {
         section.scrollIntoView({ behavior: "smooth", block: "start" });
         setActiveSection(id);
+        // Remove o hash da URL após o scroll (mantém a URL limpa)
+        if (window.location.hash === `#${id}`) {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
       }
     } else {
       if (id === "home") {
@@ -114,7 +118,18 @@ export function Header() {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }, 100);
       } else {
+        // Vai para home, espera carregar, faz scroll e remove o hash
         router.push(`/#${id}`);
+        setTimeout(() => {
+          const section = document.getElementById(id);
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth", block: "start" });
+            // Remove o hash da URL após o scroll
+            if (window.location.hash === `#${id}`) {
+              history.replaceState(null, "", window.location.pathname + window.location.search);
+            }
+          }
+        }, 400); // tempo suficiente para a navegação e renderização
       }
     }
 
