@@ -96,26 +96,28 @@ export function Header() {
   // Função para navegar para seções
   const navigateToSection = (id: string) => {
     if (id === "services") {
-      // Redirecionar para a página de serviços
       router.push("/servicos");
-      // Fechar o menu se estiver aberto
       if (isMenuOpen) setIsMenuOpen(false);
       return;
     }
-    
+
     if (isHomePage) {
-      // Se estiver na página principal, apenas role para a seção
       const section = document.getElementById(id);
       if (section) {
         section.scrollIntoView({ behavior: "smooth", block: "start" });
-        setActiveSection(id); // Atualiza manualmente ao clicar
+        setActiveSection(id);
       }
     } else {
-      // Se estiver em outra página, navegue para a home com o identificador da seção
-      router.push(`/#${id}`);
+      if (id === "home") {
+        router.push("/");
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 100);
+      } else {
+        router.push(`/#${id}`);
+      }
     }
 
-    // Fechar o menu ao clicar em uma seção
     if (isMenuOpen) setIsMenuOpen(false);
   };
 
@@ -141,6 +143,33 @@ export function Header() {
     setIsMenuOpen(false);
   };
 
+  // Função para clicar na logo
+  const handleLogoClick = () => {
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      router.push("/");
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100);
+    }
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
+
+  // Função para clicar no botão "Início" (navbar e mobile)
+  const handleInicioClick = () => {
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("home");
+    } else {
+      router.push("/");
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100);
+    }
+    if (isMenuOpen) setIsMenuOpen(false);
+  };
+
   return (
     <>
       <header
@@ -151,7 +180,13 @@ export function Header() {
         }`}
       >
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
-          <Link href="/" className="flex items-center z-50">
+          {/* Substitui Link por button para controlar o scroll */}
+          <button
+            onClick={handleLogoClick}
+            className="flex items-center z-50 bg-transparent border-none p-0 m-0 focus:outline-none"
+            aria-label="Ir para o início"
+            type="button"
+          >
             <Image
               src={isMenuOpen ? LogoWhite : LogoDark}
               alt="Magna Odonto Logo"
@@ -159,12 +194,12 @@ export function Header() {
               height={50}
               className="h-auto relative"
             />
-          </Link>
+          </button>
 
           {/* Menu de navegação para telas maiores */}
           <nav className="hidden lg:flex items-center space-x-8">
             <button
-              onClick={() => navigateToSection("home")}
+              onClick={handleInicioClick}
               className={`p-[27px] flex items-center border-b-2 ${
                 isActive("home")
                   ? "border-primary-dark-blue font-bold" 
@@ -262,7 +297,7 @@ export function Header() {
           {/* Items do menu mobile */}
           <nav className="flex flex-col items-center space-y-6 text-center">
             <button
-              onClick={() => navigateToSection("home")}
+              onClick={handleInicioClick}
               className={`py-3 w-full text-white ${isActive("home") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
             >
               Início
