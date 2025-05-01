@@ -12,10 +12,35 @@ export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const pathname = usePathname();
   const router = useRouter();
   const isHomePage = pathname === "/";
   const isServicosPage = pathname !== null && (pathname === "/servicos" || pathname.startsWith("/servicos/"));
+
+  // Controle de exibição do header ao rolar
+  useEffect(() => {
+    const controlHeader = () => {
+      if (isMenuOpen) return; // Não oculta o header se o menu mobile estiver aberto
+      
+      const currentScrollY = window.scrollY;
+      
+      // Oculta o header quando rola para baixo, mostra quando rola para cima
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        setShowHeader(false);
+      } else {
+        setShowHeader(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", controlHeader);
+    return () => {
+      window.removeEventListener("scroll", controlHeader);
+    };
+  }, [lastScrollY, isMenuOpen]);
 
   // Detectar seção ativa quando estiver na página inicial
   useEffect(() => {
@@ -121,7 +146,9 @@ export function Header() {
       <header
         className={`w-full h-20 fixed top-0 left-0 right-0 flex flex-wrap items-center ${
           isMenuOpen ? "bg-primary-dark-blue" : "bg-primary-light-blue"
-        } z-40 transition-colors duration-300`}
+        } z-40 transition-all duration-300 transform ${
+          showHeader || isMenuOpen ? "translate-y-0" : "-translate-y-full"
+        }`}
       >
         <div className="container mx-auto px-4 flex items-center justify-between max-w-7xl">
           <Link href="/" className="flex items-center z-50">
