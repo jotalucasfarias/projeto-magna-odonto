@@ -10,7 +10,7 @@ interface ServiceCardProps {
 
 export function ServiceCard({ title, shortDescription, slug  }: ServiceCardProps) {
   return (
-    <div className="bg-white border border-primary-light-blue rounded-lg overflow-hidden p-6 text-start flex flex-col h-[275px]">
+    <div className="bg-white border border-primary-light-blue rounded-lg overflow-hidden p-6 text-start flex flex-col h-64">
       <div className="flex-grow">
         {/* Ícone check no card */}
         <div className="mb-4">
