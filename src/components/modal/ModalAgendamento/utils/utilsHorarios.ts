@@ -1,17 +1,56 @@
 import type { TimeSlot } from "@/lib/types/appointment";
 
 /**
- * Gera os horários disponíveis para agendamento, das 8h às 18h
+ * Gera os horários disponíveis para agendamento
+ * Horário de atendimento: Segunda a Sexta 08:00 às 11:30 / 14:00 às 18:00
  */
 export const criarHorariosDisponiveis = (): TimeSlot[] => {
   const horarios: TimeSlot[] = [];
-  for (let hora = 8; hora <= 18; hora++) {
+  
+  // Período da manhã: 8:00 às 11:30
+  for (let hora = 8; hora <= 11; hora++) {
+    // Adiciona slots de 30 em 30 minutos
     horarios.push({
       id: `${hora}:00`,
       time: `${hora}:00`,
       isAvailable: true,
     });
+    
+    // Não adicionar 11:30 se for 11:30
+    if (hora < 11) {
+      horarios.push({
+        id: `${hora}:30`,
+        time: `${hora}:30`,
+        isAvailable: true,
+      });
+    } else {
+      // Para 11h, adicionar apenas o slot de 11:30
+      horarios.push({
+        id: `${hora}:30`,
+        time: `${hora}:30`,
+        isAvailable: true,
+      });
+    }
   }
+  
+  // Período da tarde: 14:00 às 18:00
+  for (let hora = 14; hora <= 18; hora++) {
+    horarios.push({
+      id: `${hora}:00`,
+      time: `${hora}:00`,
+      isAvailable: true,
+    });
+    
+    // Não adicionar 18:30
+    if (hora < 18) {
+      horarios.push({
+        id: `${hora}:30`,
+        time: `${hora}:30`,
+        isAvailable: true,
+      });
+    }
+  }
+  
   return horarios;
 };
 

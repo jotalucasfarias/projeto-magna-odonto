@@ -320,6 +320,11 @@ export default function AdminDashboard() {
     }
   };
 
+  const formatDateToBrazilian = (dateString: string) => {
+    const [year, month, day] = dateString.split("-");
+    return `${day}/${month}/${year}`;
+  };
+
   // Componente para métricas resumidas
   const ReportSummary = () => {
     const totalAppointments = reportData.length;
@@ -586,7 +591,7 @@ export default function AdminDashboard() {
                             className="h-5 w-5 text-gray-400 mr-2"
                           />
                           <div className="text-sm text-gray-900">
-                            {appointment.date}
+                            {formatDateToBrazilian(appointment.date)}
                           </div>
                         </div>
                       </td>
@@ -772,7 +777,7 @@ export default function AdminDashboard() {
                                 className="h-5 w-5 text-gray-400 mr-2"
                               />
                               <div className="text-sm text-gray-900">
-                                {appointment.date}
+                                {formatDateToBrazilian(appointment.date)}
                               </div>
                             </div>
                           </td>
