@@ -120,6 +120,7 @@ export default function ContatoPage() {
                   <h2 className="text-2xl font-bold text-gray-headline mb-6">
                     Informações de Contato
                   </h2>
+                  
                   <ul className="space-y-6">
                     <li className="flex items-start">
                       <FontAwesomeIcon
@@ -127,7 +128,7 @@ export default function ContatoPage() {
                         className="text-xl text-primary-dark-blue mt-1"
                       />
                       <span className="text-gray-paragraph ml-4">
-                        Av. Jatuarana n°4941, Nova Floresta. Sala 01
+                        Av. Jatuarana n°4941 sala 01 Nova Floresta.
                         <br />
                         Porto Velho - RO
                       </span>
@@ -137,14 +138,21 @@ export default function ContatoPage() {
                         icon={faPhone}
                         className="text-xl text-primary-dark-blue"
                       />
-                      <span className="text-gray-paragraph ml-4">(69) 99602-1979</span>
+                      <a 
+                        href="https://api.whatsapp.com/send?phone=556996021979" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-gray-paragraph ml-4 hover:text-primary-blue transition-colors"
+                      >
+                        (69) 99602-1979
+                      </a>
                     </li>
                     <li className="flex items-center">
                       <FontAwesomeIcon
                         icon={faEnvelope}
                         className="text-xl text-primary-dark-blue"
                       />
-                      <span className="text-gray-paragraph ml-4">contato@magnaodonto.com.br</span>
+                      <span className="text-gray-paragraph ml-4">magnamartinha@hotmail.com</span>
                     </li>
                     <li className="flex items-start">
                       <FontAwesomeIcon
@@ -153,7 +161,8 @@ export default function ContatoPage() {
                       />
                       <div className="text-gray-paragraph ml-4">
                         <p className="mb-1 font-medium">Horário de Atendimento</p>
-                        <p className="mb-0">Segunda à Sexta: 08:00 às 18:00</p>
+                        <p className="mb-0">Segunda a Sexta: 08:00 às 11:30</p>
+                        <p className="mb-0">14:00 às 18:00</p>
                       </div>
                     </li>
                   </ul>
