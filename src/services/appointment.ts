@@ -87,7 +87,7 @@ class AppointmentService {
   async updateAppointment(id: string, appointmentData: Partial<Appointment>): Promise<void> {
     try {
       // Remove a propriedade id se ela foi incluída nos dados
-      const { id: _, ...dataToUpdate } = appointmentData as any;
+      const { id, ...dataToUpdate } = appointmentData;
       
       // Atualiza o documento no Firestore
       const appointmentRef = doc(db, "appointments", id);

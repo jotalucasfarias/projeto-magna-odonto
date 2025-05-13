@@ -13,13 +13,25 @@ import {
   faPhone,
   faDownload,
   faFilter,
+  faFilePdf,
+  faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
+import { jsPDF } from "jspdf";
+import 'jspdf-autotable';
+import { UserOptions } from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: UserOptions) => jsPDF;
+  }
+}
 
 export default function ReportsPanel() {
   const { services, generateReport } = useAppointments();
   const [isLoading, setIsLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState<string | null>(null);
   
-  // Report states
   const [reportType, setReportType] = useState("daily");
   const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
@@ -33,7 +45,14 @@ export default function ReportsPanel() {
     setIsLoading(false);
   };
 
-  // Export report as CSV
+  // Função para gerar nome do arquivo baseado nos filtros atuais
+  const getFilenameBase = () => {
+    const period = reportType === "daily" ? `_${startDate}` : `_${startDate}_a_${endDate}`;
+    const service = selectedService === "todos" ? "" : `_${selectedService}`;
+    return `relatorio${period}${service}`;
+  };
+
+  // Exporta Relatorio para CSV
   const exportReportToCsv = () => {
     if (reportData.length === 0) return;
 
@@ -65,16 +84,95 @@ export default function ReportsPanel() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
 
-    // Create filename
-    const period = reportType === "daily" ? `_${startDate}` : `_${startDate}_a_${endDate}`;
-    const service = selectedService === "todos" ? "" : `_${selectedService}`;
-
     link.setAttribute("href", url);
-    link.setAttribute("download", `relatorio${period}${service}.csv`);
+    link.setAttribute("download", `${getFilenameBase()}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Exportar Relatorio para PDF
+  const exportReportToPdf = async () => {
+    if (reportData.length === 0) return;
+    setExportLoading('pdf');
+    
+    try {
+      const doc = new jsPDF();
+      
+      // Adicionar título
+      const titulo = `Relatório de Agendamentos - ${selectedService === 'todos' ? 'Todos os serviços' : selectedService}`;
+      doc.setFontSize(15);
+      doc.text(titulo, 14, 15);
+      
+      // Adicionar período do relatório
+      const periodo = reportType === "daily" 
+        ? `Data: ${formatDateToBrazilian(startDate)}`
+        : `Período: ${formatDateToBrazilian(startDate)} a ${formatDateToBrazilian(endDate)}`;
+      
+      doc.setFontSize(11);
+      doc.text(periodo, 14, 22);
+      
+      // Adicionar contagem de agendamentos
+      doc.text(`Total de agendamentos: ${reportData.length}`, 14, 28);
+      
+      // Preparar dados para a tabela
+      const tableData = reportData.map(item => [
+        item.name,
+        item.phone,
+        item.service,
+        formatDateToBrazilian(item.date),
+        item.timeSlot
+      ]);
+      
+      // Gerar tabela
+      doc.autoTable({
+        head: [['Nome', 'Telefone', 'Serviço', 'Data', 'Horário']],
+        body: tableData,
+        startY: 35,
+        headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [240, 240, 240] }
+      });
+      
+      // Salvar o PDF
+      doc.save(`${getFilenameBase()}.pdf`);
+    } catch (error) {
+      console.error("Erro ao exportar para PDF:", error);
+    } finally {
+      setExportLoading(null);
+    }
+  };
+
+  // Exporta Relatorio para Excel
+  const exportReportToExcel = async () => {
+    if (reportData.length === 0) return;
+    setExportLoading('excel');
+    
+    try {
+      // Preparar dados para o Excel
+      const excelData = reportData.map(item => ({
+        Nome: item.name,
+        Telefone: item.phone,
+        Serviço: item.service,
+        Data: formatDateToBrazilian(item.date),
+        Horário: item.timeSlot,
+        Observações: item.message || ''
+      }));
+      
+      // Criar uma planilha
+      const ws = XLSX.utils.json_to_sheet(excelData);
+      
+      // Criar um livro e adicionar a planilha
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Agendamentos');
+      
+      // Gerar e salvar o arquivo
+      XLSX.writeFile(wb, `${getFilenameBase()}.xlsx`);
+    } catch (error) {
+      console.error("Erro ao exportar para Excel:", error);
+    } finally {
+      setExportLoading(null);
+    }
   };
 
   return (
@@ -84,7 +182,7 @@ export default function ReportsPanel() {
         Relatórios Personalizados
       </h2>
 
-      {/* Report filters */}
+      {/* Filtros do Relatorio */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -145,7 +243,7 @@ export default function ReportsPanel() {
         </div>
       </div>
 
-      <div className="flex gap-3 mb-8">
+      <div className="flex flex-wrap gap-3 mb-8">
         <button
           onClick={handleGenerateReport}
           disabled={isLoading}
@@ -155,21 +253,45 @@ export default function ReportsPanel() {
           {isLoading ? "Gerando..." : "Gerar Relatório"}
         </button>
 
-        <button
-          onClick={exportReportToCsv}
-          disabled={reportData.length === 0}
-          className={`px-4 py-2 rounded-lg flex items-center ${
-            reportData.length > 0
-              ? "bg-green-600 text-white hover:bg-green-700"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-          }`}
-        >
-          <FontAwesomeIcon icon={faDownload} className="mr-2" />
-          Exportar CSV
-        </button>
+        {reportData.length > 0 && (
+          <>
+            <button
+              onClick={exportReportToCsv}
+              disabled={exportLoading !== null}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+            >
+              <FontAwesomeIcon icon={faDownload} className="mr-2" />
+              Exportar CSV
+            </button>
+            
+            <button
+              onClick={exportReportToExcel}
+              disabled={exportLoading !== null}
+              className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 flex items-center"
+            >
+              <FontAwesomeIcon 
+                icon={exportLoading === 'excel' ? faDownload : faFileExcel} 
+                className={`mr-2 ${exportLoading === 'excel' ? 'animate-spin' : ''}`} 
+              />
+              {exportLoading === 'excel' ? 'Exportando...' : 'Exportar Excel'}
+            </button>
+            
+            <button
+              onClick={exportReportToPdf}
+              disabled={exportLoading !== null}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center"
+            >
+              <FontAwesomeIcon 
+                icon={exportLoading === 'pdf' ? faDownload : faFilePdf} 
+                className={`mr-2 ${exportLoading === 'pdf' ? 'animate-spin' : ''}`} 
+              />
+              {exportLoading === 'pdf' ? 'Exportando...' : 'Exportar PDF'}
+            </button>
+          </>
+        )}
       </div>
 
-      {/* Report results */}
+      {/* Resultado do Relatório */}
       {reportData.length > 0 && (
         <>
           <ReportSummary reportData={reportData} />
