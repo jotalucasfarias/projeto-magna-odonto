@@ -1,4 +1,3 @@
-
 import { db } from "@/lib/firebase/config";
 import { Appointment } from "@/lib/types/appointment";
 import {
@@ -8,6 +7,8 @@ import {
   query,
   where,
   serverTimestamp,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 
 // Serviço para gerenciar agendamentos
@@ -78,6 +79,21 @@ class AppointmentService {
       return docRef.id;
     } catch (error) {
       console.error("Erro ao criar agendamento:", error);
+      throw error;
+    }
+  }
+
+  // Atualiza um agendamento existente
+  async updateAppointment(id: string, appointmentData: Partial<Appointment>): Promise<void> {
+    try {
+      // Remove a propriedade id se ela foi incluída nos dados
+      const { id: _, ...dataToUpdate } = appointmentData as any;
+      
+      // Atualiza o documento no Firestore
+      const appointmentRef = doc(db, "appointments", id);
+      await updateDoc(appointmentRef, dataToUpdate);
+    } catch (error) {
+      console.error("Erro ao atualizar agendamento:", error);
       throw error;
     }
   }

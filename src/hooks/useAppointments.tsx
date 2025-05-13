@@ -11,6 +11,8 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { AdminAppointment } from "@/types/admin";
+import { appointmentService } from "@/services/appointment";
+import { toast } from "react-hot-toast";
 
 export function useAppointments() {
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
@@ -19,6 +21,8 @@ export function useAppointments() {
   );
   const [services, setServices] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<AdminAppointment | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const fetchAppointments = async () => {
     try {
@@ -112,6 +116,61 @@ export function useAppointments() {
     }
   };
 
+  // Função para abrir o modal de edição
+  const openEditModal = (appointment: AdminAppointment) => {
+    setEditingAppointment(appointment);
+    setIsEditModalOpen(true);
+  };
+
+  // Função para fechar o modal de edição
+  const closeEditModal = () => {
+    setEditingAppointment(null);
+    setIsEditModalOpen(false);
+  };
+
+  // Função para salvar a edição do agendamento
+  const handleEditAppointment = async (updatedAppointment: AdminAppointment) => {
+    if (!updatedAppointment.id) return;
+    
+    try {
+      setIsLoading(true);
+      
+      // Se a data ou horário foi alterado, verificar se está disponível
+      if (editingAppointment && 
+          (editingAppointment.date !== updatedAppointment.date || 
+           editingAppointment.timeSlot !== updatedAppointment.timeSlot)) {
+        const isAvailable = await appointmentService.checkAvailability(
+          updatedAppointment.date, 
+          updatedAppointment.timeSlot
+        );
+        
+        if (!isAvailable) {
+          toast.error("Este horário já está ocupado por outro agendamento");
+          setIsLoading(false);
+          return false;
+        }
+      }
+      
+      // Atualizar no Firebase
+      await appointmentService.updateAppointment(updatedAppointment.id, updatedAppointment);
+      
+      // Atualizar a lista local
+      const updatedAppointments = appointments.map(app => 
+        app.id === updatedAppointment.id ? updatedAppointment : app
+      );
+      setAppointments(updatedAppointments);
+      
+      toast.success("Agendamento atualizado com sucesso!");
+      setIsLoading(false);
+      return true;
+    } catch (err) {
+      console.error("Erro ao atualizar agendamento:", err);
+      toast.error("Erro ao atualizar agendamento");
+      setIsLoading(false);
+      return false;
+    }
+  };
+
   // Initial fetch on component mount
   useEffect(() => {
     fetchAppointments();
@@ -127,6 +186,11 @@ export function useAppointments() {
     fetchAppointments,
     handleDeleteAppointment,
     filterAppointmentsByDate,
-    generateReport
+    generateReport,
+    editingAppointment,
+    isEditModalOpen,
+    openEditModal,
+    closeEditModal,
+    handleEditAppointment
   };
 }

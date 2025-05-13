@@ -10,7 +10,10 @@ import {
 import {
   faPhone,
   faTrash,
+  faPencilAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import EditAppointmentModal from "./EditAppointmentModal";
+import { Toaster } from "react-hot-toast";
 
 export default function AppointmentsPanel() {
   const {
@@ -20,11 +23,23 @@ export default function AppointmentsPanel() {
     fetchAppointments,
     handleDeleteAppointment,
     filterAppointmentsByDate,
+    // Novos estados e funções para edição
+    editingAppointment,
+    isEditModalOpen,
+    openEditModal,
+    closeEditModal,
+    handleEditAppointment,
+    isLoading,
   } = useAppointments();
+
+  // Filtrar agendamentos pela data selecionada
+  const filteredAppointments = filterAppointmentsByDate(appointments);
 
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-8">
-      <div className="flex items-center gap-4 mb-6">
+      <Toaster position="top-center" />
+      
+      <div className="flex flex-wrap items-center gap-4 mb-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Filtrar por Data
@@ -38,16 +53,33 @@ export default function AppointmentsPanel() {
         </div>
         <button
           onClick={fetchAppointments}
-          className="mt-6 px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue"
+          className="mt-auto px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue"
         >
           Atualizar
         </button>
       </div>
 
-      <AppointmentsTable 
-        appointments={filterAppointmentsByDate(appointments)}
-        onDelete={handleDeleteAppointment}
-      />
+      {filteredAppointments.length > 0 ? (
+        <AppointmentsTable 
+          appointments={filteredAppointments}
+          onDelete={handleDeleteAppointment}
+          onEdit={openEditModal}
+        />
+      ) : (
+        <div className="text-center py-10 text-gray-500">
+          Nenhum agendamento encontrado para esta data.
+        </div>
+      )}
+
+      {/* Modal de edição */}
+      {isEditModalOpen && editingAppointment && (
+        <EditAppointmentModal
+          appointment={editingAppointment}
+          onClose={closeEditModal}
+          onSave={handleEditAppointment}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 }
@@ -55,9 +87,10 @@ export default function AppointmentsPanel() {
 interface AppointmentsTableProps {
   appointments: AdminAppointment[];
   onDelete: (id: string) => void;
+  onEdit: (appointment: AdminAppointment) => void;
 }
 
-function AppointmentsTable({ appointments, onDelete }: AppointmentsTableProps) {
+function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -136,12 +169,22 @@ function AppointmentsTable({ appointments, onDelete }: AppointmentsTableProps) {
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <button
-                  onClick={() => onDelete(appointment.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
-                </button>
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={() => onEdit(appointment)}
+                    className="text-blue-600 hover:text-blue-900"
+                    title="Editar agendamento"
+                  >
+                    <FontAwesomeIcon icon={faPencilAlt} className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(appointment.id)}
+                    className="text-red-600 hover:text-red-900"
+                    title="Excluir agendamento"
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
