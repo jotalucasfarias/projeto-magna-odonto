@@ -76,7 +76,9 @@ export default function AppointmentsPanel() {
         <EditAppointmentModal
           appointment={editingAppointment}
           onClose={closeEditModal}
-          onSave={handleEditAppointment}
+          onSave={(updatedAppointment) => 
+            handleEditAppointment(updatedAppointment).then(result => result === true)
+          }
           isLoading={isLoading}
         />
       )}

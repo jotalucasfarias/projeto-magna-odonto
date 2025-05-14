@@ -152,7 +152,11 @@ export function useAppointments() {
       }
       
       // Atualizar no Firebase
-      await appointmentService.updateAppointment(updatedAppointment.id, updatedAppointment);
+      const appointmentForUpdate = {
+        ...updatedAppointment,
+        createdAt: updatedAppointment.createdAt ? new Date(updatedAppointment.createdAt) : undefined
+      };
+      await appointmentService.updateAppointment(updatedAppointment.id, appointmentForUpdate);
       
       // Atualizar a lista local
       const updatedAppointments = appointments.map(app => 
