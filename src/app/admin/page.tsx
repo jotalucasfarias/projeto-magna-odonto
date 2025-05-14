@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import AdminLogin from "@/components/admin/AdminLogin";
 import AdminHeader from "@/components/admin/AdminHeader";
@@ -8,11 +8,30 @@ import ReportsPanel from "@/components/admin/ReportsPanel";
 import MessagesPanel from "@/components/admin/MessagesPanel";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartBar, faMessage } from "@fortawesome/free-solid-svg-icons";
+import { faChartBar, faMessage, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminDashboard() {
   const { isLoading, isAuthenticated, handleLogout } = useAuth();
   const [activeTab, setActiveTab] = useState<"appointments" | "reports" | "messages">("appointments");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar tamanho da tela
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    // Verificar inicialmente
+    checkIsMobile();
+
+    // Adicionar listener para mudanças no tamanho da tela
+    window.addEventListener('resize', checkIsMobile);
+
+    // Remover listener quando componente for desmontado
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -34,53 +53,116 @@ export default function AdminDashboard() {
     }
   };
 
+  // Ícone da aba ativa
+  const getActiveIcon = () => {
+    switch (activeTab) {
+      case "appointments":
+        return faCalendarCheck;
+      case "reports":
+        return faChartBar;
+      case "messages":
+        return faMessage;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
       <div className="max-w-6xl mx-auto">
         <AdminHeader onLogout={handleLogout} />
         
-        {/* Abas de navegação com melhor destaque visual */}
-        <div className="mb-2">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab("appointments")}
-                className={`py-4 px-1 border-b-2 font-medium ${
-                  activeTab === "appointments"
-                    ? "border-primary-blue text-primary-blue font-bold text-base"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 text-sm"
-                }`}
-              >
-                Agendamentos
-              </button>
-              <button
-                onClick={() => setActiveTab("reports")}
-                className={`py-4 px-1 border-b-2 font-medium ${
-                  activeTab === "reports"
-                    ? "border-primary-blue text-primary-blue font-bold text-base"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 text-sm"
-                }`}
-              >
-                <FontAwesomeIcon icon={faChartBar} className="mr-2" />
-                Relatórios
-              </button>
-              <button
-                onClick={() => setActiveTab("messages")}
-                className={`py-4 px-1 border-b-2 font-medium ${
-                  activeTab === "messages"
-                    ? "border-primary-blue text-primary-blue font-bold text-base"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 text-sm"
-                }`}
-              >
-                <FontAwesomeIcon icon={faMessage} className="mr-2" />
-                Mensagens
-              </button>
-            </nav>
-          </div>
+        {/* Abas de navegação - Design responsivo */}
+        <div className="mb-4">
+          {isMobile ? (
+            // Layout móvel com menu de dropdown ou grid
+            <div className="bg-white rounded-lg shadow-sm p-2">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-bold text-primary-blue flex items-center">
+                  <FontAwesomeIcon icon={getActiveIcon()} className="mr-2" />
+                  {activeTab === "appointments" ? "Agendamentos" : 
+                   activeTab === "reports" ? "Relatórios" : "Mensagens"}
+                </h2>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-1 text-center">
+                <button
+                  onClick={() => setActiveTab("appointments")}
+                  className={`py-2 px-1 rounded-md ${
+                    activeTab === "appointments"
+                      ? "bg-primary-blue text-white font-medium"
+                      : "bg-gray-100 text-gray-600"
+                  } text-xs flex flex-col items-center justify-center`}
+                >
+                  <FontAwesomeIcon icon={faCalendarCheck} className="mb-1" />
+                  Agenda
+                </button>
+                <button
+                  onClick={() => setActiveTab("reports")}
+                  className={`py-2 px-1 rounded-md ${
+                    activeTab === "reports"
+                      ? "bg-primary-blue text-white font-medium"
+                      : "bg-gray-100 text-gray-600"
+                  } text-xs flex flex-col items-center justify-center`}
+                >
+                  <FontAwesomeIcon icon={faChartBar} className="mb-1" />
+                  Relatórios
+                </button>
+                <button
+                  onClick={() => setActiveTab("messages")}
+                  className={`py-2 px-1 rounded-md ${
+                    activeTab === "messages"
+                      ? "bg-primary-blue text-white font-medium"
+                      : "bg-gray-100 text-gray-600"
+                  } text-xs flex flex-col items-center justify-center`}
+                >
+                  <FontAwesomeIcon icon={faMessage} className="mb-1" />
+                  Mensagens
+                </button>
+              </div>
+            </div>
+          ) : (
+            // Layout Desktop com tabs tradicionais
+            <div className="border-b border-gray-200">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  onClick={() => setActiveTab("appointments")}
+                  className={`py-4 px-1 border-b-2 font-medium ${
+                    activeTab === "appointments"
+                      ? "border-primary-blue text-primary-blue font-bold text-base"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 text-sm"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faCalendarCheck} className="mr-2" />
+                  Agendamentos
+                </button>
+                <button
+                  onClick={() => setActiveTab("reports")}
+                  className={`py-4 px-1 border-b-2 font-medium ${
+                    activeTab === "reports"
+                      ? "border-primary-blue text-primary-blue font-bold text-base"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 text-sm"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faChartBar} className="mr-2" />
+                  Relatórios
+                </button>
+                <button
+                  onClick={() => setActiveTab("messages")}
+                  className={`py-4 px-1 border-b-2 font-medium ${
+                    activeTab === "messages"
+                      ? "border-primary-blue text-primary-blue font-bold text-base"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 text-sm"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faMessage} className="mr-2" />
+                  Mensagens
+                </button>
+              </nav>
+            </div>
+          )}
         </div>
 
-        {/* Subtítulo explicativo sobre a seção atual */}
-        <p className="text-gray-600 mb-6 pl-1">{getSubtitle()}</p>
+        {/* Subtítulo explicativo - esconde em mobile */}
+        {!isMobile && <p className="text-gray-600 mb-6 pl-1">{getSubtitle()}</p>}
 
         {activeTab === "appointments" && <AppointmentsPanel />}
         {activeTab === "reports" && <ReportsPanel />}

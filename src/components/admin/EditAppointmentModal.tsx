@@ -116,8 +116,8 @@ export default function EditAppointmentModal({
   const { manha, tarde } = agruparHorariosPorPeriodo();
   
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative overflow-y-auto max-h-[90vh]">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-4 sm:p-6 relative overflow-y-auto max-h-[90vh]">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
@@ -126,7 +126,7 @@ export default function EditAppointmentModal({
           <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
         </button>
         
-        <h2 className="text-xl font-bold text-primary-blue mb-6">
+        <h2 className="text-xl font-bold text-primary-blue mb-6 pr-6">
           Editar Agendamento
         </h2>
         
@@ -219,7 +219,7 @@ export default function EditAppointmentModal({
                 {/* Período da manhã */}
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 mb-2">Manhã</h3>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
                     {manha.map((slot) => (
                       <button
                         key={slot.id}
@@ -243,7 +243,7 @@ export default function EditAppointmentModal({
                 {/* Período da tarde */}
                 <div>
                   <h3 className="text-sm font-medium text-gray-500 mb-2">Tarde</h3>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-3 lg:grid-cols-4 gap-2">
                     {tarde.map((slot) => (
                       <button
                         key={slot.id}
@@ -294,22 +294,22 @@ export default function EditAppointmentModal({
             />
           </div>
           
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 order-2 sm:order-1"
               disabled={isLoading}
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-primary-blue text-white rounded-md hover:bg-primary-dark-blue"
+              className="px-4 py-2 bg-primary-blue text-white rounded-md hover:bg-primary-dark-blue order-1 sm:order-2"
               disabled={isLoading || !formData.timeSlot}
             >
               {isLoading ? (
-                <span className="flex items-center">
+                <span className="flex items-center justify-center">
                   <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />

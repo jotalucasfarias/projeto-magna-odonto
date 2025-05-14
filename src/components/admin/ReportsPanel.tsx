@@ -15,11 +15,13 @@ import {
   faFilter,
   faFilePdf,
   faFileExcel,
+  faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import { UserOptions } from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { useEffect } from "react";
 
 declare module 'jspdf' {
   interface jsPDF {
@@ -37,6 +39,25 @@ export default function ReportsPanel() {
   const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedService, setSelectedService] = useState("todos");
   const [reportData, setReportData] = useState<AdminAppointment[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar tamanho da tela
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    // Verificar inicialmente
+    checkIsMobile();
+
+    // Adicionar listener para mudanças no tamanho da tela
+    window.addEventListener('resize', checkIsMobile);
+
+    // Remover listener quando componente for desmontado
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   const handleGenerateReport = async () => {
     setIsLoading(true);
@@ -176,14 +197,14 @@ export default function ReportsPanel() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-8">
+    <div className="bg-white rounded-lg shadow p-4 lg:p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">
         <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
         Relatórios Personalizados
       </h2>
 
-      {/* Filtros do Relatorio */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* Filtros do Relatorio - Layout melhorado para responsividade */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tipo de Relatório
@@ -247,142 +268,197 @@ export default function ReportsPanel() {
         <button
           onClick={handleGenerateReport}
           disabled={isLoading}
-          className="px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue flex items-center"
+          className="px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue flex items-center w-full sm:w-auto justify-center sm:justify-start mb-2 sm:mb-0"
         >
           <FontAwesomeIcon icon={faFilter} className="mr-2" />
           {isLoading ? "Gerando..." : "Gerar Relatório"}
         </button>
 
         {reportData.length > 0 && (
-          <>
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             <button
               onClick={exportReportToCsv}
               disabled={exportLoading !== null}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center flex-1 sm:flex-auto justify-center"
             >
               <FontAwesomeIcon icon={faDownload} className="mr-2" />
-              Exportar CSV
+              CSV
             </button>
             
             <button
               onClick={exportReportToExcel}
               disabled={exportLoading !== null}
-              className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 flex items-center"
+              className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 flex items-center flex-1 sm:flex-auto justify-center"
             >
               <FontAwesomeIcon 
                 icon={exportLoading === 'excel' ? faDownload : faFileExcel} 
                 className={`mr-2 ${exportLoading === 'excel' ? 'animate-spin' : ''}`} 
               />
-              {exportLoading === 'excel' ? 'Exportando...' : 'Exportar Excel'}
+              {exportLoading === 'excel' ? 'Exportando...' : 'Excel'}
             </button>
             
             <button
               onClick={exportReportToPdf}
               disabled={exportLoading !== null}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center flex-1 sm:flex-auto justify-center"
             >
               <FontAwesomeIcon 
                 icon={exportLoading === 'pdf' ? faDownload : faFilePdf} 
                 className={`mr-2 ${exportLoading === 'pdf' ? 'animate-spin' : ''}`} 
               />
-              {exportLoading === 'pdf' ? 'Exportando...' : 'Exportar PDF'}
+              {exportLoading === 'pdf' ? 'Exportando...' : 'PDF'}
             </button>
-          </>
+          </div>
         )}
       </div>
 
       {/* Resultado do Relatório */}
-      {reportData.length > 0 && (
+      {isLoading ? (
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-blue"></div>
+          <p className="mt-2 text-gray-600">Gerando relatório...</p>
+        </div>
+      ) : reportData.length > 0 ? (
         <>
           <ReportSummary reportData={reportData} />
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Paciente
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Serviço
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Data
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Horário
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contato
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {reportData.map((appointment) => (
-                  <tr key={appointment.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon
-                          icon={faUser}
-                          className="h-5 w-5 text-gray-400 mr-2"
-                        />
-                        <div className="text-sm font-medium text-gray-900">
-                          {appointment.name}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {appointment.service}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon
-                          icon={faCalendar}
-                          className="h-5 w-5 text-gray-400 mr-2"
-                        />
-                        <div className="text-sm text-gray-900">
-                          {formatDateToBrazilian(appointment.date)}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          className="h-5 w-5 text-gray-400 mr-2"
-                        />
-                        <div className="text-sm text-gray-900">
-                          {appointment.timeSlot}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon
-                          icon={faPhone}
-                          className="h-5 w-5 text-gray-400 mr-2"
-                        />
-                        <div className="text-sm text-gray-900">
-                          {appointment.phone}
-                        </div>
-                      </div>
-                    </td>
+          {isMobile ? (
+            <ReportMobileList reportData={reportData} />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Paciente
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Serviço
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Data
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Horário
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Contato
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {reportData.map((appointment) => (
+                    <tr key={appointment.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            className="h-5 w-5 text-gray-400 mr-2"
+                          />
+                          <div className="text-sm font-medium text-gray-900">
+                            {appointment.name}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {appointment.service}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon
+                            icon={faCalendar}
+                            className="h-5 w-5 text-gray-400 mr-2"
+                          />
+                          <div className="text-sm text-gray-900">
+                            {formatDateToBrazilian(appointment.date)}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            className="h-5 w-5 text-gray-400 mr-2"
+                          />
+                          <div className="text-sm text-gray-900">
+                            {appointment.timeSlot}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon
+                            icon={faPhone}
+                            className="h-5 w-5 text-gray-400 mr-2"
+                          />
+                          <div className="text-sm text-gray-900">
+                            {appointment.phone}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </>
-      )}
-
-      {reportData.length === 0 && (
+      ) : (
         <div className="text-center py-10 text-gray-500">
           Nenhum resultado encontrado. Ajuste os filtros e tente
           novamente.
         </div>
       )}
+    </div>
+  );
+}
+
+// Componente para exibir lista de relatórios em formato mobile
+function ReportMobileList({ reportData }: { reportData: AdminAppointment[] }) {
+  return (
+    <div className="space-y-4">
+      {reportData.map((appointment) => (
+        <div key={appointment.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+          <div className="flex items-center space-x-2 mb-2">
+            <FontAwesomeIcon icon={faUser} className="h-5 w-5 text-primary-blue" />
+            <h3 className="font-semibold text-gray-900">{appointment.name}</h3>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 mt-3">
+            <div className="flex items-center text-sm">
+              <FontAwesomeIcon icon={faStethoscope} className="h-4 w-4 text-gray-500 mr-2" />
+              <span className="text-gray-600">Serviço:</span>
+              <span className="ml-2 font-medium">{appointment.service}</span>
+            </div>
+            
+            <div className="flex items-center text-sm">
+              <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-gray-500 mr-2" />
+              <span className="text-gray-600">Data:</span>
+              <span className="ml-2 font-medium">{formatDateToBrazilian(appointment.date)}</span>
+            </div>
+            
+            <div className="flex items-center text-sm">
+              <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-gray-500 mr-2" />
+              <span className="text-gray-600">Horário:</span>
+              <span className="ml-2 font-medium">{appointment.timeSlot}</span>
+            </div>
+            
+            <div className="flex items-center text-sm">
+              <FontAwesomeIcon icon={faPhone} className="h-4 w-4 text-gray-500 mr-2" />
+              <span className="text-gray-600">Telefone:</span>
+              <span className="ml-2 font-medium">{appointment.phone}</span>
+            </div>
+          </div>
+
+          {appointment.message && (
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              <p className="text-xs text-gray-500">Observações: {appointment.message}</p>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
@@ -417,10 +493,10 @@ function ReportSummary({ reportData }: ReportSummaryProps) {
           <p className="text-sm text-gray-500 mb-2">
             Agendamentos por Serviço
           </p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {Object.entries(serviceCount).map(([service, count]) => (
               <div key={service} className="flex justify-between">
-                <span className="text-sm">{service}:</span>
+                <span className="text-sm truncate pr-2">{service}:</span>
                 <span className="font-medium">{count}</span>
               </div>
             ))}
