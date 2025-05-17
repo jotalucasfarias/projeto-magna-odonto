@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface TimeSlot {
   id: string;
   time: string;
@@ -12,5 +14,7 @@ export interface Appointment {
   date: string;
   timeSlot: string;
   message?: string;
-  createdAt: Date;
+  createdAt: Date | Timestamp;
+  reminderSent?: boolean;
+  lastReminderDate?: Date | Timestamp;
 }

@@ -84,6 +84,41 @@ class AppointmentService {
       throw error;
     }
   }
+  
+  // Método para enviar lembretes de agendamento via WhatsApp
+  async sendAppointmentReminder(appointment: Appointment): Promise<boolean> {
+    try {
+      // Formatar a data para exibição amigável
+      const dateParts = appointment.date.split('-');
+      const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+      
+      // Formatação do texto da mensagem
+      const message = `Olá ${appointment.name}, este é um lembrete da sua consulta na Magna Odonto:\n\n📅 Data: ${formattedDate}\n🕐 Horário: ${appointment.timeSlot}\n🏥 Serviço: ${appointment.service}\n\nPor favor, confirme seu agendamento respondendo esta mensagem. Em caso de imprevisto, entre em contato para reagendamento.`;
+      
+      // Formatar o número de telefone (remover caracteres não numéricos)
+      const phone = appointment.phone.replace(/\D/g, '');
+      
+      // URL do WhatsApp com a mensagem codificada
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=55${phone}&text=${encodeURIComponent(message)}`;
+      
+      // Abrir o WhatsApp Web ou app em uma nova janela
+      window.open(whatsappUrl, '_blank');
+      
+      // Atualizar o documento para registrar que o lembrete foi enviado
+      if (appointment.id) {
+        const appointmentRef = doc(db, "appointments", appointment.id);
+        await updateDoc(appointmentRef, {
+          reminderSent: true,
+          lastReminderDate: serverTimestamp()
+        });
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Erro ao enviar lembrete:", error);
+      return false;
+    }
+  }
 }
 
 export const appointmentService = new AppointmentService();

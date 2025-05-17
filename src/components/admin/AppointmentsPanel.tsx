@@ -17,6 +17,7 @@ import {
   faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
 import EditAppointmentModal from "./EditAppointmentModal";
+import ReminderButton from "./ReminderButton";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 
@@ -28,7 +29,6 @@ export default function AppointmentsPanel() {
     fetchAppointments,
     handleDeleteAppointment,
     filterAppointmentsByDate,
-    // Novos estados e funções para edição
     editingAppointment,
     isEditModalOpen,
     openEditModal,
@@ -245,6 +245,7 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center space-x-3">
+                    <ReminderButton appointment={appointment} />
                     <button
                       onClick={() => onEdit(appointment)}
                       className="text-blue-600 hover:text-blue-900"
@@ -307,6 +308,7 @@ function AppointmentsMobileList({ appointments, onDelete, onEdit }: Appointments
               <h3 className="font-semibold text-gray-900">{appointment.name}</h3>
             </div>
             <div className="flex space-x-2">
+              <ReminderButton appointment={appointment} />
               <button
                 onClick={() => onEdit(appointment)}
                 className="text-blue-600 p-2 hover:bg-blue-50 rounded-full"
