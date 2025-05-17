@@ -11,15 +11,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-// Serviço para gerenciar agendamentos
 class AppointmentService {
-  // Coleção de agendamentos no Firestore
   private appointmentsCollection = collection(db, "appointments");
 
-  // Verifica se um horário específico está disponível
   async checkAvailability(date: string, timeSlot: string): Promise<boolean> {
     try {
-      // Consulta o Firebase para verificar se já existe agendamento nesse horário
       const q = query(
         this.appointmentsCollection,
         where("date", "==", date),
@@ -27,33 +23,25 @@ class AppointmentService {
       );
 
       const snapshot = await getDocs(q);
-
-      // Se não houver agendamentos, o horário está disponível
       return snapshot.empty;
     } catch (error) {
       console.error("Erro ao verificar disponibilidade:", error);
-      // Em caso de erro, assumimos que o horário não está disponível por segurança
       return false;
     }
   }
 
-  // Busca os horários disponíveis para uma data específica
   async getAvailableTimeSlots(
     date: string,
     allTimeSlots: string[]
   ): Promise<string[]> {
     try {
-      // Busca todos os agendamentos para a data selecionada
       const q = query(this.appointmentsCollection, where("date", "==", date));
 
       const snapshot = await getDocs(q);
-
-      // Extrai os horários já agendados
       const bookedTimeSlots = snapshot.docs.map(
         (doc) => doc.data().timeSlot as string
       );
 
-      // Filtra os horários disponíveis (remove os já agendados)
       return allTimeSlots.filter((slot) => !bookedTimeSlots.includes(slot));
     } catch (error) {
       console.error("Erro ao buscar horários disponíveis:", error);
@@ -61,16 +49,15 @@ class AppointmentService {
     }
   }
 
-  // Cria um novo agendamento
   async createAppointment(appointmentData: Appointment): Promise<string> {
     try {
-      // Prepara os dados para salvar no Firebase
+      // Prepara objeto com data de criação
       const appointment: Omit<Appointment, "id"> = {
         ...appointmentData,
         createdAt: new Date(),
       };
 
-      // Adiciona o documento no Firestore
+      // Adiciona documento usando timestamp do servidor
       const docRef = await addDoc(this.appointmentsCollection, {
         ...appointment,
         createdAt: serverTimestamp(),
@@ -83,14 +70,13 @@ class AppointmentService {
     }
   }
 
-  // Atualiza um agendamento existente
   async updateAppointment(id: string, appointmentData: Partial<Appointment>): Promise<void> {
     try {
-      // Remove a propriedade id se ela foi incluída nos dados
+      // Remove campos id e createdAt para evitar erros na atualização
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id: _, ...dataToUpdate } = appointmentData;
+      const { id: _, createdAt, ...dataToUpdate } = appointmentData;
       
-      // Atualiza o documento no Firestore
+      // Atualiza apenas os campos seguros
       const appointmentRef = doc(db, "appointments", id);
       await updateDoc(appointmentRef, dataToUpdate);
     } catch (error) {
@@ -100,5 +86,4 @@ class AppointmentService {
   }
 }
 
-// Exporta uma instância do serviço
 export const appointmentService = new AppointmentService();

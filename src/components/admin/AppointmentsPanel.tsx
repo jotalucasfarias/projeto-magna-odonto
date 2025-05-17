@@ -6,12 +6,15 @@ import {
   faCalendar,
   faClock,
   faUser,
+  faComment,
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faPhone,
   faTrash,
   faPencilAlt,
   faStethoscope,
+  faChevronDown,
+  faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
 import EditAppointmentModal from "./EditAppointmentModal";
 import { Toaster } from "react-hot-toast";
@@ -130,6 +133,15 @@ interface AppointmentsTableProps {
 
 // Versão para desktop
 function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTableProps) {
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+
+  const toggleRow = (id: string) => {
+    setExpandedRows(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -151,81 +163,122 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
               Contato
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Obs
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Ações
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {appointments.map((appointment) => (
-            <tr key={appointment.id}>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faUser}
-                    className="h-5 w-5 text-gray-400 mr-2"
-                  />
-                  <div className="text-sm font-medium text-gray-900">
-                    {appointment.name}
+            <>
+              <tr key={appointment.id}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      className="h-5 w-5 text-gray-400 mr-2"
+                    />
+                    <div className="text-sm font-medium text-gray-900">
+                      {appointment.name}
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">
-                  {appointment.service}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faCalendar}
-                    className="h-5 w-5 text-gray-400 mr-2"
-                  />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {formatDateToBrazilian(appointment.date)}
+                    {appointment.service}
                   </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faClock}
-                    className="h-5 w-5 text-gray-400 mr-2"
-                  />
-                  <div className="text-sm text-gray-900">
-                    {appointment.timeSlot}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faCalendar}
+                      className="h-5 w-5 text-gray-400 mr-2"
+                    />
+                    <div className="text-sm text-gray-900">
+                      {formatDateToBrazilian(appointment.date)}
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faPhone}
-                    className="h-5 w-5 text-gray-400 mr-2"
-                  />
-                  <div className="text-sm text-gray-900">
-                    {appointment.phone}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faClock}
+                      className="h-5 w-5 text-gray-400 mr-2"
+                    />
+                    <div className="text-sm text-gray-900">
+                      {appointment.timeSlot}
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => onEdit(appointment)}
-                    className="text-blue-600 hover:text-blue-900"
-                    title="Editar agendamento"
-                  >
-                    <FontAwesomeIcon icon={faPencilAlt} className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => onDelete(appointment.id)}
-                    className="text-red-600 hover:text-red-900"
-                    title="Excluir agendamento"
-                  >
-                    <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
-                  </button>
-                </div>
-              </td>
-            </tr>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className="h-5 w-5 text-gray-400 mr-2"
+                    />
+                    <div className="text-sm text-gray-900">
+                      {appointment.phone}
+                    </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {appointment.message ? (
+                    <button 
+                      className="flex items-center text-primary-blue hover:text-primary-dark-blue focus:outline-none"
+                      onClick={() => toggleRow(appointment.id)}
+                      title="Ver observações"
+                    >
+                      <FontAwesomeIcon
+                        icon={faComment}
+                        className="h-5 w-5 mr-1"
+                      />
+                      <FontAwesomeIcon
+                        icon={expandedRows[appointment.id] ? faChevronUp : faChevronDown}
+                        className="h-3 w-3"
+                      />
+                    </button>
+                  ) : (
+                    <span className="text-gray-400 text-sm">Nenhuma</span>
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => onEdit(appointment)}
+                      className="text-blue-600 hover:text-blue-900"
+                      title="Editar agendamento"
+                    >
+                      <FontAwesomeIcon icon={faPencilAlt} className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => onDelete(appointment.id)}
+                      className="text-red-600 hover:text-red-900"
+                      title="Excluir agendamento"
+                    >
+                      <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              {appointment.message && expandedRows[appointment.id] && (
+                <tr className="bg-blue-50">
+                  <td colSpan={7} className="px-6 py-4">
+                    <div className="flex items-start">
+                      <FontAwesomeIcon
+                        icon={faComment}
+                        className="h-5 w-5 text-primary-blue mt-0.5 mr-2"
+                      />
+                      <div>
+                        <h4 className="font-medium text-gray-900 text-sm">Observações:</h4>
+                        <p className="text-gray-700 mt-1 text-sm whitespace-pre-wrap">{appointment.message}</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </>
           ))}
         </tbody>
       </table>
@@ -235,6 +288,15 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
 
 // Versão para dispositivos móveis usando cards
 function AppointmentsMobileList({ appointments, onDelete, onEdit }: AppointmentsTableProps) {
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
+
+  const toggleCard = (id: string) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
   return (
     <div className="space-y-4">
       {appointments.map((appointment) => (
@@ -290,7 +352,25 @@ function AppointmentsMobileList({ appointments, onDelete, onEdit }: Appointments
 
           {appointment.message && (
             <div className="mt-3 pt-3 border-t border-gray-100">
-              <p className="text-xs text-gray-500">Observações: {appointment.message}</p>
+              <button 
+                onClick={() => toggleCard(appointment.id)}
+                className="flex items-center text-sm text-primary-blue hover:text-primary-dark-blue focus:outline-none"
+              >
+                <FontAwesomeIcon icon={faComment} className="h-4 w-4 mr-2" />
+                <span>
+                  {expandedCards[appointment.id] ? "Ocultar observações" : "Ver observações"}
+                </span>
+                <FontAwesomeIcon
+                  icon={expandedCards[appointment.id] ? faChevronUp : faChevronDown}
+                  className="h-3 w-3 ml-1"
+                />
+              </button>
+              
+              {expandedCards[appointment.id] && (
+                <div className="mt-2 p-3 bg-blue-50 rounded-md text-sm text-gray-700 whitespace-pre-wrap">
+                  {appointment.message}
+                </div>
+              )}
             </div>
           )}
         </div>

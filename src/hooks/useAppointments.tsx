@@ -38,7 +38,7 @@ export function useAppointments() {
 
       setAppointments(appointmentsData);
 
-      // Extract unique services list for report filters
+      // Lista de serviços únicos para os filtros de relatório
       const uniqueServices = [
         ...new Set(appointmentsData.map((app) => app.service)),
       ];
@@ -65,7 +65,7 @@ export function useAppointments() {
     return appointments.filter((app) => app.date === selectedDate);
   };
 
-  // Custom function for report generation
+  // Função para geração de relatórios
   const generateReport = async (
     reportType: string,
     startDate: string,
@@ -78,7 +78,7 @@ export function useAppointments() {
       const appointmentsRef = collection(db, "appointments");
       const constraints: QueryConstraint[] = [];
 
-      // Filter by period
+      // Filtros por período
       if (reportType === "daily") {
         constraints.push(where("date", "==", startDate));
       } else {
@@ -86,7 +86,7 @@ export function useAppointments() {
         constraints.push(where("date", "<=", endDate));
       }
 
-      // Build the query with filters
+      // Construir a consulta com os filtros
       let q;
       if (constraints.length > 0) {
         q = query(appointmentsRef, ...constraints, orderBy("date", "asc"));
@@ -100,7 +100,7 @@ export function useAppointments() {
         ...doc.data(),
       })) as AdminAppointment[];
 
-      // Additional filter by service (if not "all")
+      // Filtro adicional por serviço
       if (selectedService !== "todos") {
         filteredData = filteredData.filter(
           (app) => app.service === selectedService
@@ -116,26 +116,22 @@ export function useAppointments() {
     }
   };
 
-  // Função para abrir o modal de edição
   const openEditModal = (appointment: AdminAppointment) => {
     setEditingAppointment(appointment);
     setIsEditModalOpen(true);
   };
 
-  // Função para fechar o modal de edição
   const closeEditModal = () => {
     setEditingAppointment(null);
     setIsEditModalOpen(false);
   };
 
-  // Função para salvar a edição do agendamento
   const handleEditAppointment = async (updatedAppointment: AdminAppointment) => {
     if (!updatedAppointment.id) return;
     
     try {
       setIsLoading(true);
       
-      // Se a data ou horário foi alterado, verificar se está disponível
       if (editingAppointment && 
           (editingAppointment.date !== updatedAppointment.date || 
            editingAppointment.timeSlot !== updatedAppointment.timeSlot)) {
@@ -151,14 +147,11 @@ export function useAppointments() {
         }
       }
       
-      // Atualizar no Firebase
-      const appointmentForUpdate = {
-        ...updatedAppointment,
-        createdAt: updatedAppointment.createdAt ? new Date(updatedAppointment.createdAt) : undefined
-      };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { createdAt, id, ...appointmentForUpdate } = updatedAppointment;
+      
       await appointmentService.updateAppointment(updatedAppointment.id, appointmentForUpdate);
       
-      // Atualizar a lista local
       const updatedAppointments = appointments.map(app => 
         app.id === updatedAppointment.id ? updatedAppointment : app
       );
@@ -175,7 +168,7 @@ export function useAppointments() {
     }
   };
 
-  // Initial fetch on component mount
+  // Carrega os agendamentos ao iniciar
   useEffect(() => {
     fetchAppointments();
   }, []);
