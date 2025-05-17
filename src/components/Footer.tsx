@@ -139,6 +139,12 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/perguntas-frequentes" className="text-sm flex items-center hover:underline">
+                    <FontAwesomeIcon icon={faChevronRight} className="mr-2 w-3 h-3" aria-hidden="true" />
+                    Perguntas Frequentes
+                  </Link>
+                </li>
+                <li>
                   <Link href="/fale-conosco" className="text-sm flex items-center hover:underline">
                     <FontAwesomeIcon icon={faChevronRight} className="mr-2 w-3 h-3" aria-hidden="true" />
                     Fale Conosco

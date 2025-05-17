@@ -88,6 +88,11 @@ export function Header() {
       return true;
     }
     
+    // Caso especial para a página "Perguntas Frequentes"
+    if (section === "perguntas-frequentes" && pathname === "/perguntas-frequentes") {
+      return true;
+    }
+    
     // Se não estiver na home page, não destaque nenhuma seção
     if (!isHomePage) return false;
     return section === activeSection;
@@ -244,6 +249,16 @@ export function Header() {
               Sobre
             </button>
             <Link 
+              href="/perguntas-frequentes"
+              className={`p-[27px] flex items-center border-b-2 ${
+                isActive("perguntas-frequentes")
+                  ? "border-primary-dark-blue font-bold" 
+                  : "border-transparent hover:border-primary-dark-blue font-normal"
+              } text-primary-dark-blue cursor-pointer`}
+            >
+              FAQ
+            </Link>
+            <Link 
               href="/fale-conosco"
               className={`p-[27px] flex items-center border-b-2 ${
                 isActive("fale-conosco")
@@ -329,6 +344,13 @@ export function Header() {
             >
               Sobre
             </button>
+            <Link 
+              href="/perguntas-frequentes"
+              className={`py-3 w-full text-white ${isActive("perguntas-frequentes") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
+              onClick={closeMenu}
+            >
+              FAQ
+            </Link>
             <Link 
               href="/fale-conosco"
               className={`py-3 w-full text-white ${isActive("fale-conosco") ? "font-bold" : "font-normal"} text-xl cursor-pointer`}
