@@ -71,7 +71,7 @@ export default function MessagesPanel() {
         </div>
         <button
           onClick={fetchMessages}
-          className="w-full sm:w-auto mt-2 sm:mt-6 px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue"
+          className="w-full sm:w-auto mt-2 sm:mt-6 px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue cursor-pointer"
         >
           Atualizar
         </button>
@@ -150,7 +150,7 @@ function MessageCard({ message, onToggleStatus, onDelete, isMobile }: MessageCar
               message.status === "não-lido" 
                 ? "text-green-600 hover:bg-green-100" 
                 : "text-blue-600 hover:bg-blue-100"
-            }`}
+            } cursor-pointer`}
             title={message.status === "não-lido" ? "Marcar como lida" : "Marcar como não lida"}
             aria-label={message.status === "não-lido" ? "Marcar como lida" : "Marcar como não lida"}
           >
@@ -158,7 +158,7 @@ function MessageCard({ message, onToggleStatus, onDelete, isMobile }: MessageCar
           </button>
           <button
             onClick={() => onDelete(message.id)}
-            className="p-1 text-red-600 hover:bg-red-100 rounded"
+            className="p-1 text-red-600 hover:bg-red-100 rounded cursor-pointer"
             title="Excluir mensagem"
             aria-label="Excluir mensagem"
           >
@@ -175,7 +175,7 @@ function MessageCard({ message, onToggleStatus, onDelete, isMobile }: MessageCar
           </div>
           <button 
             onClick={toggleExpand}
-            className="text-xs text-blue-600 hover:underline"
+            className="text-xs text-blue-600 hover:underline cursor-pointer"
           >
             Ler mais
           </button>
@@ -209,7 +209,7 @@ function MessageCard({ message, onToggleStatus, onDelete, isMobile }: MessageCar
           {isMobile && (
             <button 
               onClick={toggleExpand}
-              className="w-full text-center mt-3 text-xs text-blue-600 hover:underline"
+              className="w-full text-center mt-3 text-xs text-blue-600 hover:underline cursor-pointer"
             >
               Fechar detalhes
             </button>

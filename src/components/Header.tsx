@@ -203,7 +203,7 @@ export function Header() {
           {/* Substitui Link por button para controlar o scroll */}
           <button
             onClick={handleLogoClick}
-            className="flex items-center z-50 bg-transparent border-none p-0 m-0 focus:outline-none"
+            className="flex items-center z-50 bg-transparent border-none p-0 m-0 focus:outline-none cursor-pointer "
             aria-label="Ir para o início"
             type="button"
           >

@@ -17,13 +17,13 @@ export default function FAQPage() {
       setIsMobile(window.innerWidth < 768);
     };
 
-    // Verificar inicialmente
+ 
     checkIsMobile();
 
-    // Adicionar listener para mudanças no tamanho da tela
+
     window.addEventListener('resize', checkIsMobile);
 
-    // Remover listener quando componente for desmontado
+
     return () => {
       window.removeEventListener('resize', checkIsMobile);
     };
@@ -80,10 +80,10 @@ export default function FAQPage() {
                       <button
                         key={category.id}
                         onClick={() => setActiveCategory(category.id)}
-                        className={`block w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                        className={`block w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
                           activeCategory === category.id
                             ? "bg-primary-light-blue text-primary-dark-blue font-medium"
-                            : "hover:bg-gray-50 text-gray-paragraph"
+                            : "hover:bg-gray-100 text-gray-paragraph"
                         }`}
                       >
                         {category.title}
@@ -120,9 +120,9 @@ export default function FAQPage() {
                   >
                     <button
                       onClick={() => toggleQuestion(`${selectedCategory.id}-${index}`)}
-                      className="w-full flex justify-between items-center p-5 text-left focus:outline-none"
+                      className="w-full flex justify-between items-center p-5 text-left focus:outline-none cursor-pointer hover:bg-gray-100"
                     >
-                      <h3 className="text-lg font-medium text-gray-headline">
+                      <h3 className="text-lg font-medium text-gray-headline ">
                         {faq.question}
                       </h3>
                       <FontAwesomeIcon

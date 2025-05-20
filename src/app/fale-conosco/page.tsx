@@ -244,7 +244,7 @@ export default function ContatoPage() {
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full p-2 border border-off-white rounded-lg focus:ring-2 focus:ring-primary-blue focus:border-primary-blue bg-primary-beige outline-none"
+                        className="w-full p-2 border border-off-white rounded-lg focus:ring-2 focus:ring-primary-blue focus:border-primary-blue bg-primary-beige outline-none cursor-pointer"
                         required
                       >
                         <option value="">Selecione um assunto</option>
@@ -277,7 +277,7 @@ export default function ContatoPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full px-6 py-3 bg-primary-blue text-white rounded-lg hover:bg-hover-blue transition-colors font-bold"
+                      className="w-full px-6 py-3 bg-primary-blue text-white rounded-lg hover:bg-hover-blue transition-colors font-bold cursor-pointer"
                     >
                       {loading ? (
                         <span className="flex items-center justify-center">

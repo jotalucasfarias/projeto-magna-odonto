@@ -46,7 +46,7 @@ export default function AppointmentsPanel() {
       setIsMobile(window.innerWidth < 1024);
     };
 
-    // Verificar inicialmente
+    // Verificar primeiro
     checkIsMobile();
 
     // Adicionar listener para mudanças no tamanho da tela
@@ -74,12 +74,12 @@ export default function AppointmentsPanel() {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue"
+            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue cursor-pointer"
           />
         </div>
         <button
           onClick={fetchAppointments}
-          className="w-full sm:w-auto mt-2 sm:mt-auto px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue flex items-center justify-center"
+          className="w-full sm:w-auto mt-2 sm:mt-auto px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue flex items-center justify-center cursor-pointer"
         >
           Atualizar
         </button>
@@ -178,7 +178,7 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                   <div className="flex items-center">
                     <FontAwesomeIcon
                       icon={faUser}
-                      className="h-5 w-5 text-gray-400 mr-2"
+                      className="h-5 w-5 text-primary-blue mr-2"
                     />
                     <div className="text-sm font-medium text-gray-900">
                       {appointment.name}
@@ -194,7 +194,7 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                   <div className="flex items-center">
                     <FontAwesomeIcon
                       icon={faCalendar}
-                      className="h-5 w-5 text-gray-400 mr-2"
+                      className="h-5 w-5 text-primary-blue mr-2"
                     />
                     <div className="text-sm text-gray-900">
                       {formatDateToBrazilian(appointment.date)}
@@ -205,7 +205,7 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                   <div className="flex items-center">
                     <FontAwesomeIcon
                       icon={faClock}
-                      className="h-5 w-5 text-gray-400 mr-2"
+                      className="h-5 w-5 text-primary-blue mr-2"
                     />
                     <div className="text-sm text-gray-900">
                       {appointment.timeSlot}
@@ -216,7 +216,7 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                   <div className="flex items-center">
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className="h-5 w-5 text-gray-400 mr-2"
+                      className="h-5 w-5 text-primary-blue mr-2"
                     />
                     <div className="text-sm text-gray-900">
                       {appointment.phone}
@@ -226,17 +226,17 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                 <td className="px-6 py-4 whitespace-nowrap">
                   {appointment.message ? (
                     <button 
-                      className="flex items-center text-primary-blue hover:text-primary-dark-blue focus:outline-none"
+                      className="flex items-center text-primary-blue hover:text-primary-dark-blue focus:outline-none cursor-pointer"
                       onClick={() => toggleRow(appointment.id)}
                       title="Ver observações"
                     >
                       <FontAwesomeIcon
                         icon={faComment}
-                        className="h-5 w-5 mr-1"
+                        className="h-5 w-5 text-primary-blue mr-1"
                       />
                       <FontAwesomeIcon
                         icon={expandedRows[appointment.id] ? faChevronUp : faChevronDown}
-                        className="h-3 w-3"
+                        className="h-3 w-3 text-primary-blue"
                       />
                     </button>
                   ) : (
@@ -248,14 +248,14 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                     <ReminderButton appointment={appointment} />
                     <button
                       onClick={() => onEdit(appointment)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-primary-blue hover:text-primary-dark-blue cursor-pointer"
                       title="Editar agendamento"
                     >
                       <FontAwesomeIcon icon={faPencilAlt} className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => onDelete(appointment.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 cursor-pointer"
                       title="Excluir agendamento"
                     >
                       <FontAwesomeIcon icon={faTrash} className="h-5 w-5" />
@@ -311,14 +311,14 @@ function AppointmentsMobileList({ appointments, onDelete, onEdit }: Appointments
               <ReminderButton appointment={appointment} />
               <button
                 onClick={() => onEdit(appointment)}
-                className="text-blue-600 p-2 hover:bg-blue-50 rounded-full"
+                className="text-primary-blue p-2 hover:bg-blue-50 rounded-full cursor-pointer"
                 title="Editar agendamento"
               >
                 <FontAwesomeIcon icon={faPencilAlt} className="h-4 w-4" />
               </button>
               <button
                 onClick={() => onDelete(appointment.id)}
-                className="text-red-600 p-2 hover:bg-red-50 rounded-full"
+                className="text-red-600 p-2 hover:bg-red-50 rounded-full cursor-pointer"
                 title="Excluir agendamento"
               >
                 <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
@@ -328,25 +328,25 @@ function AppointmentsMobileList({ appointments, onDelete, onEdit }: Appointments
 
           <div className="grid grid-cols-1 gap-2 mt-3">
             <div className="flex items-center text-sm">
-              <FontAwesomeIcon icon={faStethoscope} className="h-4 w-4 text-gray-500 mr-2" />
+              <FontAwesomeIcon icon={faStethoscope} className="h-4 w-4 text-primary-blue mr-2" />
               <span className="text-gray-600">Serviço:</span>
               <span className="ml-2 font-medium">{appointment.service}</span>
             </div>
             
             <div className="flex items-center text-sm">
-              <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-gray-500 mr-2" />
+              <FontAwesomeIcon icon={faCalendar} className="h-4 w-4 text-primary-blue mr-2" />
               <span className="text-gray-600">Data:</span>
               <span className="ml-2 font-medium">{formatDateToBrazilian(appointment.date)}</span>
             </div>
             
             <div className="flex items-center text-sm">
-              <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-gray-500 mr-2" />
+              <FontAwesomeIcon icon={faClock} className="h-4 w-4 text-primary-blue mr-2" />
               <span className="text-gray-600">Horário:</span>
               <span className="ml-2 font-medium">{appointment.timeSlot}</span>
             </div>
             
             <div className="flex items-center text-sm">
-              <FontAwesomeIcon icon={faPhone} className="h-4 w-4 text-gray-500 mr-2" />
+              <FontAwesomeIcon icon={faPhone} className="h-4 w-4 text-primary-blue mr-2" />
               <span className="text-gray-600">Telefone:</span>
               <span className="ml-2 font-medium">{appointment.phone}</span>
             </div>
@@ -356,15 +356,15 @@ function AppointmentsMobileList({ appointments, onDelete, onEdit }: Appointments
             <div className="mt-3 pt-3 border-t border-gray-100">
               <button 
                 onClick={() => toggleCard(appointment.id)}
-                className="flex items-center text-sm text-primary-blue hover:text-primary-dark-blue focus:outline-none"
+                className="flex items-center text-sm text-primary-blue hover:text-primary-dark-blue focus:outline-none cursor-pointer"
               >
-                <FontAwesomeIcon icon={faComment} className="h-4 w-4 mr-2" />
+                <FontAwesomeIcon icon={faComment} className="h-4 w-4 text-primary-blue mr-2" />
                 <span>
                   {expandedCards[appointment.id] ? "Ocultar observações" : "Ver observações"}
                 </span>
                 <FontAwesomeIcon
                   icon={expandedCards[appointment.id] ? faChevronUp : faChevronDown}
-                  className="h-3 w-3 ml-1"
+                  className="h-3 w-3 text-primary-blue ml-1"
                 />
               </button>
               

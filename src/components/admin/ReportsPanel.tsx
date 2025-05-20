@@ -268,7 +268,7 @@ export default function ReportsPanel() {
         <button
           onClick={handleGenerateReport}
           disabled={isLoading}
-          className="px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue flex items-center w-full sm:w-auto justify-center sm:justify-start mb-2 sm:mb-0"
+          className="px-4 py-2 bg-primary-blue text-white rounded-lg hover:bg-primary-dark-blue flex items-center w-full sm:w-auto justify-center sm:justify-start mb-2 sm:mb-0 cursor-pointer"
         >
           <FontAwesomeIcon icon={faFilter} className="mr-2" />
           {isLoading ? "Gerando..." : "Gerar Relatório"}
@@ -279,7 +279,7 @@ export default function ReportsPanel() {
             <button
               onClick={exportReportToCsv}
               disabled={exportLoading !== null}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center flex-1 sm:flex-auto justify-center"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center flex-1 sm:flex-auto justify-center cursor-pointer"
             >
               <FontAwesomeIcon icon={faDownload} className="mr-2" />
               CSV
@@ -288,7 +288,7 @@ export default function ReportsPanel() {
             <button
               onClick={exportReportToExcel}
               disabled={exportLoading !== null}
-              className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 flex items-center flex-1 sm:flex-auto justify-center"
+              className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 flex items-center flex-1 sm:flex-auto justify-center cursor-pointer"
             >
               <FontAwesomeIcon 
                 icon={exportLoading === 'excel' ? faDownload : faFileExcel} 
@@ -300,7 +300,7 @@ export default function ReportsPanel() {
             <button
               onClick={exportReportToPdf}
               disabled={exportLoading !== null}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center flex-1 sm:flex-auto justify-center"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center flex-1 sm:flex-auto justify-center cursor-pointer"
             >
               <FontAwesomeIcon 
                 icon={exportLoading === 'pdf' ? faDownload : faFilePdf} 
