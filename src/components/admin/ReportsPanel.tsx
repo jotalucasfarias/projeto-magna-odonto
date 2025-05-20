@@ -73,46 +73,6 @@ export default function ReportsPanel() {
     return `relatorio${period}${service}`;
   };
 
-  // Exporta Relatorio para CSV
-  const exportReportToCsv = () => {
-    if (reportData.length === 0) return;
-
-    const headers = [
-      "Nome",
-      "Telefone",
-      "Serviço",
-      "Data",
-      "Horário",
-      "Mensagem",
-    ];
-
-    const csvRows = [
-      headers.join(","),
-      ...reportData.map((item) => {
-        return [
-          `"${item.name}"`,
-          `"${item.phone}"`,
-          `"${item.service}"`,
-          `"${item.date}"`,
-          `"${item.timeSlot}"`,
-          `"${item.message?.replace(/"/g, '""') || ""}"`,
-        ].join(",");
-      }),
-    ];
-
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${getFilenameBase()}.csv`);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   // Exportar Relatorio para PDF
   const exportReportToPdf = async () => {
     if (reportData.length === 0) return;
@@ -276,15 +236,6 @@ export default function ReportsPanel() {
 
         {reportData.length > 0 && (
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-            <button
-              onClick={exportReportToCsv}
-              disabled={exportLoading !== null}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center flex-1 sm:flex-auto justify-center cursor-pointer"
-            >
-              <FontAwesomeIcon icon={faDownload} className="mr-2" />
-              CSV
-            </button>
-            
             <button
               onClick={exportReportToExcel}
               disabled={exportLoading !== null}
