@@ -9,8 +9,9 @@ import {
 import {
   faTrash,
   faEnvelopeOpen,
-  faCheck,
+  faCheck
 } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons"; 
 import { ContactMessage } from "@/types/admin";
 import { useState, useEffect } from "react";
 
@@ -122,6 +123,24 @@ function MessageCard({ message, onToggleStatus, onDelete, isMobile }: MessageCar
     setIsExpanded(!isExpanded);
   };
 
+  // Função para gerar link do WhatsApp
+  const getWhatsappLink = (phone: string) => {
+    // Remove caracteres não numéricos e adiciona DDI Brasil se necessário
+    let cleanPhone = phone.replace(/\D/g, "");
+    if (cleanPhone.length === 11 && cleanPhone.startsWith("9")) {
+      // Possível número sem DDD, não alterar
+    } else if (cleanPhone.length === 10 && cleanPhone.startsWith("9")) {
+      // Possível número sem DDD, não alterar
+    } else if (cleanPhone.length === 11 && !cleanPhone.startsWith("55")) {
+      cleanPhone = "55" + cleanPhone;
+    } else if (cleanPhone.length === 13 && cleanPhone.startsWith("55")) {
+      // já está correto
+    } else if (cleanPhone.length === 12 && !cleanPhone.startsWith("55")) {
+      cleanPhone = "55" + cleanPhone;
+    }
+    return `https://wa.me/${cleanPhone}`;
+  };
+
   return (
     <div 
       className={`border rounded-lg p-4 ${
@@ -144,6 +163,19 @@ function MessageCard({ message, onToggleStatus, onDelete, isMobile }: MessageCar
           <h3 className="text-lg font-semibold">{message.subject}</h3>
         </div>
         <div className="flex items-center gap-2">
+          {/* Botão WhatsApp, só aparece se houver telefone */}
+          {message.phone && (
+            <a
+              href={getWhatsappLink(message.phone)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1 text-green-600 hover:bg-green-100 rounded cursor-pointer"
+              title="Responder no WhatsApp"
+              aria-label="Responder no WhatsApp"
+            >
+              <FontAwesomeIcon icon={faWhatsapp} />
+            </a>
+          )}
           <button
             onClick={() => onToggleStatus(message.id, message.status)}
             className={`p-1 rounded ${
