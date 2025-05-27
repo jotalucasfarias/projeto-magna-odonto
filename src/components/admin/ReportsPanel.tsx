@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppointments } from "@/hooks/useAppointments";
 import { AdminAppointment } from "@/types/admin";
 import { formatDateToBrazilian } from "@/utils/formatters";
@@ -17,17 +17,9 @@ import {
   faFileExcel,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { jsPDF } from "jspdf";
-import 'jspdf-autotable';
-import { UserOptions } from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
-import { useEffect } from "react";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import ExcelJS from "exceljs";
 
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: UserOptions) => jsPDF;
-  }
-}
 
 export default function ReportsPanel() {
   const { services, generateReport } = useAppointments();
@@ -73,50 +65,98 @@ export default function ReportsPanel() {
     return `relatorio${period}${service}`;
   };
 
-  // Exportar Relatorio para PDF
+  // Exportar Relatorio para PDF usando pdf-lib
   const exportReportToPdf = async () => {
     if (reportData.length === 0) return;
     setExportLoading('pdf');
-    
+
     try {
-      const doc = new jsPDF();
-      
-      // Adicionar título
-      const titulo = `Relatório de Agendamentos - ${selectedService === 'todos' ? 'Todos os serviços' : selectedService}`;
-      doc.setFontSize(15);
-      doc.text(titulo, 14, 15);
-      
-      // Adicionar período do relatório
-      const periodo = reportType === "daily" 
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { height } = page.getSize();
+      const margin = 40;
+      const lineHeight = 20;
+      let y = height - margin;
+
+      // Título
+      const title = `Relatório de Agendamentos - ${selectedService === 'todos' ? 'Todos os serviços' : selectedService}`;
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      page.drawText(title, { x: margin, y, size: 15, font, color: rgb(0.16, 0.5, 0.73) });
+      y -= lineHeight + 5;
+
+      // Período
+      const periodo = reportType === "daily"
         ? `Data: ${formatDateToBrazilian(startDate)}`
         : `Período: ${formatDateToBrazilian(startDate)} a ${formatDateToBrazilian(endDate)}`;
-      
-      doc.setFontSize(11);
-      doc.text(periodo, 14, 22);
-      
-      // Adicionar contagem de agendamentos
-      doc.text(`Total de agendamentos: ${reportData.length}`, 14, 28);
-      
-      // Preparar dados para a tabela
-      const tableData = reportData.map(item => [
-        item.name,
-        item.phone,
-        item.service,
-        formatDateToBrazilian(item.date),
-        item.timeSlot
-      ]);
-      
-      // Gerar tabela
-      doc.autoTable({
-        head: [['Nome', 'Telefone', 'Serviço', 'Data', 'Horário']],
-        body: tableData,
-        startY: 35,
-        headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255] },
-        alternateRowStyles: { fillColor: [240, 240, 240] }
+      page.drawText(periodo, { x: margin, y, size: 11, font: await pdfDoc.embedFont(StandardFonts.Helvetica) });
+      y -= lineHeight;
+
+      // Total de agendamentos
+      page.drawText(`Total de agendamentos: ${reportData.length}`, { x: margin, y, size: 11, font: await pdfDoc.embedFont(StandardFonts.Helvetica) });
+      y -= lineHeight;
+
+      // Cabeçalho da tabela
+      const headers = ['Nome', 'Telefone', 'Serviço', 'Data', 'Horário'];
+      let x = margin;
+      const colWidths = [120, 80, 100, 60, 60];
+      headers.forEach((header, idx) => {
+        page.drawText(header, { x, y, size: 11, font, color: rgb(1, 1, 1), });
+        x += colWidths[idx];
       });
-      
-      // Salvar o PDF
-      doc.save(`${getFilenameBase()}.pdf`);
+      y -= lineHeight;
+      x = margin;
+
+      // Fundo do cabeçalho
+      page.drawRectangle({
+        x: margin - 2,
+        y: y + 2,
+        width: colWidths.reduce((a, b) => a + b, 0) + 4,
+        height: lineHeight,
+        color: rgb(0.16, 0.5, 0.73),
+        opacity: 0.9,
+        borderColor: rgb(0.16, 0.5, 0.73),
+      });
+
+      // Reescrever o cabeçalho por cima do fundo
+      x = margin;
+      headers.forEach((header, idx) => {
+        page.drawText(header, { x, y: y + 5, size: 11, font, color: rgb(1, 1, 1) });
+        x += colWidths[idx];
+      });
+      y -= lineHeight;
+
+      // Dados da tabela
+      const rowFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      for (const item of reportData) {
+        x = margin;
+        const row = [
+          item.name,
+          item.phone,
+          item.service,
+          formatDateToBrazilian(item.date),
+          item.timeSlot,
+        ];
+        row.forEach((cell, idx) => {
+          page.drawText(cell, { x, y, size: 10, font: rowFont, color: rgb(0, 0, 0) });
+          x += colWidths[idx];
+        });
+        y -= lineHeight;
+        if (y < margin + lineHeight) {
+          // Nova página se necessário
+          y = height - margin;
+          pdfDoc.addPage();
+        }
+      }
+
+      // Download do PDF
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${getFilenameBase()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error("Erro ao exportar para PDF:", error);
     } finally {
@@ -124,31 +164,47 @@ export default function ReportsPanel() {
     }
   };
 
-  // Exporta Relatorio para Excel
+  // Exporta Relatorio para Excel usando exceljs
   const exportReportToExcel = async () => {
     if (reportData.length === 0) return;
     setExportLoading('excel');
-    
+
     try {
-      // Preparar dados para o Excel
-      const excelData = reportData.map(item => ({
-        Nome: item.name,
-        Telefone: item.phone,
-        Serviço: item.service,
-        Data: formatDateToBrazilian(item.date),
-        Horário: item.timeSlot,
-        Observações: item.message || ''
-      }));
-      
-      // Criar uma planilha
-      const ws = XLSX.utils.json_to_sheet(excelData);
-      
-      // Criar um livro e adicionar a planilha
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Agendamentos');
-      
-      // Gerar e salvar o arquivo
-      XLSX.writeFile(wb, `${getFilenameBase()}.xlsx`);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Agendamentos');
+
+      worksheet.columns = [
+        { header: 'Nome', key: 'name', width: 30 },
+        { header: 'Telefone', key: 'phone', width: 18 },
+        { header: 'Serviço', key: 'service', width: 25 },
+        { header: 'Data', key: 'date', width: 15 },
+        { header: 'Horário', key: 'timeSlot', width: 12 },
+        { header: 'Observações', key: 'message', width: 40 },
+      ];
+
+      reportData.forEach(item => {
+        worksheet.addRow({
+          name: item.name,
+          phone: item.phone,
+          service: item.service,
+          date: formatDateToBrazilian(item.date),
+          timeSlot: item.timeSlot,
+          message: item.message || '',
+        });
+      });
+
+      // Estilizar cabeçalho
+      worksheet.getRow(1).font = { bold: true };
+
+      // Gerar arquivo e baixar
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${getFilenameBase()}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error("Erro ao exportar para Excel:", error);
     } finally {
