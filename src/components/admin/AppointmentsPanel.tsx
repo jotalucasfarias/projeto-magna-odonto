@@ -20,6 +20,7 @@ import EditAppointmentModal from "./EditAppointmentModal";
 import ReminderButton from "./ReminderButton";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
+import React from "react";
 
 export default function AppointmentsPanel() {
   const {
@@ -172,8 +173,8 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {appointments.map((appointment) => (
-            <>
-              <tr key={appointment.id}>
+            <React.Fragment key={appointment.id}>
+              <tr>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <FontAwesomeIcon
@@ -279,7 +280,7 @@ function AppointmentsTable({ appointments, onDelete, onEdit }: AppointmentsTable
                   </td>
                 </tr>
               )}
-            </>
+            </React.Fragment>
           ))}
         </tbody>
       </table>

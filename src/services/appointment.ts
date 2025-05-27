@@ -96,8 +96,11 @@ class AppointmentService {
       const message = `Olá ${appointment.name}, este é um lembrete da sua consulta na Magna Odonto:\n\n📅 Data: ${formattedDate}\n🕐 Horário: ${appointment.timeSlot}\n🏥 Serviço: ${appointment.service}\n\nPor favor, confirme seu agendamento respondendo esta mensagem. Em caso de imprevisto, entre em contato para reagendamento.`;
       
       // Formatar o número de telefone (remover caracteres não numéricos)
-      const phone = appointment.phone.replace(/\D/g, '');
-      
+      let phone = appointment.phone.replace(/\D/g, '');
+      // Remove DDI e DDD se já estiverem presentes (ex: 55 ou 0XX)
+      if (phone.startsWith('55')) {
+        phone = phone.slice(2);
+      }
       // URL do WhatsApp com a mensagem codificada
       const whatsappUrl = `https://api.whatsapp.com/send?phone=55${phone}&text=${encodeURIComponent(message)}`;
       
