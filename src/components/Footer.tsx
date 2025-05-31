@@ -21,33 +21,50 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   // Local Business structured data for SEO
-  const businessSchema = {
+  const structuredData = {
     "@context": "https://schema.org",
     "@type": "Dentist",
-    "name": "Magna Odonto",
-    "image": "https://projeto-magna-odonto.vercel.app/logo-dark.png",
+    "name": "Clínica Magna Odonto",
+    "image": "https://magnaodonto.com.br/logo.png",
+    "url": "https://magnaodonto.com.br",
+    "telephone": "+556996021979",
+    "email": "magnamartinha@hotmail.com",
+    "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Av. Principal, 1234",
+      "streetAddress": "Av. Jatuarana n°4941 sala 01",
       "addressLocality": "Porto Velho",
       "addressRegion": "RO",
-      "postalCode": "76800-000",
+      "postalCode": "",
       "addressCountry": "BR"
     },
-    "telephone": "+55 69 3333-3333",
-    "email": "contato@magnaodonto.com.br",
-    "url": "https://projeto-magna-odonto.vercel.app",
-    "openingHours": "Mo,Tu,We,Th,Fr 08:00-18:00",
-    "priceRange": "$$"
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -8.7608199,
+      "longitude": -63.874666
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "11:30"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "14:00",
+        "closes": "18:00"
+      }
+    ]
   };
 
   return (
     <footer className="bg-blue-500 text-white py-12" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Rodapé - Informações de contato e links úteis</h2>
       <Script id="dental-clinic-structured-data" type="application/ld+json">
-        {JSON.stringify(businessSchema)}
+        {JSON.stringify(structuredData)}
       </Script>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }} />
       <div className="w-full max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {/* Coluna 1: Sobre a clínica */}
