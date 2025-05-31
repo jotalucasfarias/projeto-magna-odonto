@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin
+
+Allow: /
+
+Sitemap: https://projeto-magna-odonto.vercel.app/sitemap.xml
