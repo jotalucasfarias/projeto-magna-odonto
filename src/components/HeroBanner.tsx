@@ -42,7 +42,7 @@ export function HeroBanner() {
           <div className="relative w-full max-w-md flex items-end justify-center h-full">
             <Image
               src={Woman}
-              alt="Paciente sorrindo em atendimento odontológico"
+              alt="Paciente sorrindo em atendimento odontológico na Magna Odonto em Porto Velho"
               width={540}
               height={540}
               priority

@@ -36,7 +36,7 @@ export const detailedServices: DetailedService[] = [
     shortDescription:
       "Alinhe seus dentes com aparelhos modernos e discretos, melhorando a estética e a função do seu sorriso de forma confortável e eficiente.",
     longDescription:
-      "A ortodontia é a especialidade odontológica dedicada à correção do posicionamento dos dentes e dos ossos maxilares. Com o uso de aparelhos fixos ou removíveis, conseguimos alinhar os dentes, corrigir problemas de mordida e proporcionar um sorriso harmonioso e funcional. Na Magna Odonto, oferecemos diferentes tipos de aparelhos ortodônticos, incluindo opções estéticas e discretas, adaptadas às necessidades e preferências de cada paciente.",
+      "A ortodontia é a especialidade odontológica dedicada à correção do posicionamento dos dentes e dos ossos maxilares. Na Magna Odonto, em Porto Velho, utilizamos aparelhos fixos, removíveis e alinhadores transparentes de última geração para alinhar os dentes, corrigir mordidas e proporcionar um sorriso harmonioso. Nosso diferencial está no atendimento personalizado, opções estéticas discretas e acompanhamento próximo durante todo o tratamento, garantindo conforto, eficiência e resultados duradouros.",
     image: ortodontiaImg,
     benefits: [
       {
@@ -83,7 +83,7 @@ export const detailedServices: DetailedService[] = [
     shortDescription:
       "Substitua dentes perdidos com implantes fixos e seguros, recuperando a funcionalidade e o visual natural do seu sorriso.",
     longDescription:
-      "Os implantes dentários são a solução mais moderna e eficaz para substituir dentes perdidos. Consistem em pinos de titânio inseridos no osso maxilar, que funcionam como raízes artificiais para suportar coroas, pontes ou próteses. São extremamente seguros e proporcionam resultados estéticos e funcionais muito semelhantes aos dentes naturais. Na Magna Odonto, realizamos todo o processo de implante com tecnologia avançada e profissionais especializados, garantindo conforto e segurança durante o tratamento.",
+      "Os implantes dentários são a solução mais moderna e eficaz para substituir dentes perdidos. Na Magna Odonto, Porto Velho, realizamos implantes com tecnologia avançada, materiais de alta qualidade e profissionais experientes. O procedimento é seguro, minimamente invasivo e proporciona resultados estéticos e funcionais muito semelhantes aos dentes naturais. Oferecemos acompanhamento completo, desde a avaliação até a reabilitação protética, priorizando o conforto e a satisfação do paciente.",
     image: implantesImg,
     benefits: [
       {
@@ -130,7 +130,7 @@ export const detailedServices: DetailedService[] = [
     shortDescription:
       "Cuide da saúde dos seus dentes e gengivas com uma avaliação completa e focada na prevenção, garantindo bem-estar e tranquilidade.",
     longDescription:
-      "A Avaliação Odontológica é a base para a saúde bucal, abrangendo diagnóstico, prevenção e planejamento de tratamento das doenças mais comuns que afetam dentes e gengivas. Inclui procedimentos como exame clínico completo, análise radiográfica quando necessária, avaliação periodontal e diagnóstico de outras condições. Na Magna Odonto, nossos profissionais são capacitados para realizar uma avaliação completa da sua saúde bucal, identificando problemas existentes ou potenciais e propondo o tratamento mais adequado para cada caso.",
+      "A Avaliação Odontológica é o primeiro passo para um sorriso saudável. Na Magna Odonto, realizamos exames clínicos detalhados, análise radiográfica, avaliação periodontal e diagnóstico precoce de problemas bucais. Nosso atendimento é humanizado e preventivo, orientando sobre os melhores cuidados e tratamentos personalizados para cada paciente. Venha conhecer nosso diferencial em Porto Velho: tecnologia, atenção e transparência em cada consulta.",
     image: avaliacaoImg,
     benefits: [
       {
@@ -177,7 +177,7 @@ export const detailedServices: DetailedService[] = [
     shortDescription:
       "Preserve seus dentes e alivie dores com o tratamento de canal, garantindo saúde bucal e evitando extrações desnecessárias.",
     longDescription:
-      "A Endodontia é a especialidade odontológica dedicada ao tratamento da polpa dental e tecidos circundantes. O tratamento de canal é realizado quando a polpa (nervo) do dente está inflamada ou infectada, geralmente causando dor intensa. O procedimento consiste na remoção da polpa comprometida, limpeza e modelagem dos canais radiculares e seu preenchimento com material biocompatível. Na Magna Odonto, utilizamos técnicas modernas e equipamentos de alta precisão para tornar o tratamento de canal um procedimento seguro, eficaz e muito menos desconfortável do que sua reputação sugere.",
+      "A Endodontia trata inflamações e infecções na polpa do dente, aliviando dores intensas e preservando o dente natural. Na Magna Odonto, utilizamos técnicas modernas e equipamentos de alta precisão para tornar o tratamento de canal rápido, seguro e confortável. Nossa equipe em Porto Velho é especializada em endodontia, proporcionando recuperação eficiente e acompanhamento pós-tratamento para garantir sua tranquilidade.",
     image: endodontiaImg,
     benefits: [
       {
@@ -224,7 +224,7 @@ export const detailedServices: DetailedService[] = [
     shortDescription:
       "Restaure o conforto e a confiança no seu sorriso com próteses sob medida, devolvendo a funcionalidade e estética dos seus dentes.",
     longDescription:
-      "As próteses dentárias são dispositivos personalizados que substituem dentes perdidos, restaurando tanto a função mastigatória quanto a estética do sorriso. Podem ser fixas (como coroas e pontes) ou removíveis (como próteses parciais ou totais). Na Magna Odonto, utilizamos materiais de alta qualidade e técnicas avançadas para criar próteses naturais e confortáveis, adaptadas perfeitamente à sua boca. Nosso laboratório protético trabalha em estreita colaboração com nossos dentistas para garantir resultados excepcionais em termos de aparência, conforto e durabilidade.",
+      "As próteses dentárias da Magna Odonto são confeccionadas sob medida para cada paciente, devolvendo a função mastigatória, a estética e a autoestima. Trabalhamos com próteses fixas, removíveis e sobre implantes, sempre com materiais de alta qualidade e laboratório próprio. Nosso diferencial em Porto Velho é o ajuste preciso, o acompanhamento próximo e a busca pelo máximo conforto e naturalidade no resultado final.",
     image: protesesImg,
     benefits: [
       {
@@ -271,7 +271,7 @@ export const detailedServices: DetailedService[] = [
     shortDescription:
       "Harmonize seu sorriso com a gengivoplastia, um procedimento que melhora a proporção entre dentes e gengivas de forma segura e eficaz.",
     longDescription:
-      "A Gengivoplastia é um procedimento estético e funcional que visa remodelar o contorno gengival, corrigindo o sorriso gengival (excesso de gengiva ao sorrir) e harmonizando a proporção entre dentes e gengivas. É indicada para pacientes com exposição excessiva da gengiva, assimetrias gengivais ou formato irregular das gengivas. Na Magna Odonto, realizamos a gengivoplastia com técnicas minimamente invasivas e avançadas, proporcionando resultados naturais e estéticos, com recuperação rápida e confortável.",
+      "A Gengivoplastia é um procedimento estético e funcional que remodela o contorno gengival, corrigindo sorriso gengival e assimetrias. Na Magna Odonto, Porto Velho, realizamos gengivoplastia com técnicas minimamente invasivas, promovendo rápida recuperação e resultados naturais. O atendimento é personalizado, com avaliação criteriosa e acompanhamento pós-operatório para garantir a satisfação e a harmonia do seu sorriso.",
     image: gengivoplastiaImg,
     benefits: [
       {

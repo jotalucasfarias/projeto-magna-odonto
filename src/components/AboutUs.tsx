@@ -35,7 +35,7 @@ export function AboutUs() {
           <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
             <Image
               src={Woman}
-              alt="Paciente sorrindo em atendimento odontológico"
+              alt="Paciente sorrindo em atendimento odontológico na Magna Odonto em Porto Velho"
               width={520}
               height={448}
               className="rounded-3xl shadow-md"

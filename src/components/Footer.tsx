@@ -73,7 +73,7 @@ export function Footer() {
               <Image
                 src={Logo}
                 className="max-w-52"
-                alt="Logo Clínica Magna Odonto"
+                alt="Logo da Clínica Magna Odonto em Porto Velho"
                 priority={false}
                 width={200}
                 height={80}

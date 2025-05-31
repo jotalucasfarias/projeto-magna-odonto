@@ -22,7 +22,7 @@ export default function ServiceHeader({ service }: ServiceHeaderProps) {
             <div className="relative overflow-hidden rounded-lg shadow-lg">
               <Image
                 src={service.image}
-                alt={service.title}
+                alt={`Imagem ilustrativa do serviço de ${service.title} na Magna Odonto em Porto Velho`}
                 className="w-full h-auto object-cover"
                 width={600}
                 height={400}

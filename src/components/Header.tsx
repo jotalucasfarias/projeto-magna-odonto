@@ -209,7 +209,7 @@ export function Header() {
           >
             <Image
               src={isMenuOpen ? LogoWhite : LogoDark}
-              alt="Magna Odonto Logo"
+              alt="Logo da Clínica Magna Odonto em Porto Velho"
               width={150}
               height={50}
               className="h-auto relative"

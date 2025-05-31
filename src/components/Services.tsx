@@ -13,7 +13,7 @@ export function Services() {
     const preloadImages = async () => {
       try {
         // Aguarda um momento para garantir que outros recursos da página sejam carregados
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 200));
         setIsLoading(false);
       } catch (error) {
         console.error("Error preloading images:", error);
