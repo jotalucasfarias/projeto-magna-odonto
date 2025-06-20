@@ -53,7 +53,7 @@ export const useFormularioAgendamento = () => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
 
     if (name === "date") {
       setDataSelecionada(value);
@@ -67,6 +67,7 @@ export const useFormularioAgendamento = () => {
         [name]: formatarTelefone(value),
       }));
     } else if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
       setDadosFormulario(prev => ({
         ...prev,
         [name]: checked,
