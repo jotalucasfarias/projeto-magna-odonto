@@ -11,7 +11,7 @@ const dmSans = DM_Sans({
   display: "swap",  
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://magnaodonto.vercel.app';
 
 export const metadata: Metadata = {
   title: {
@@ -47,9 +47,14 @@ export const metadata: Metadata = {
     title: "Clínica Magna Odonto em Porto Velho | Dentista, Ortodontia, Implantes e Tratamentos Odontológicos",
     description: "Tratamentos odontológicos completos em Porto Velho: ortodontia, implantes, avaliação, canal, próteses, gengivoplastia e mais. Atendimento humanizado e tecnologia moderna.",
     images: [`${siteUrl}/og-image.png`], 
+  },  verification: {
+    google: "googleb1763076fe4934ae", // Token de verificação do Google Search Console
   },
-  verification: {
-    google: "verification_token",
+  alternates: {
+    canonical: siteUrl,
+    languages: {
+      'pt-BR': siteUrl,
+    },
   },
 };
 
@@ -61,6 +66,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" dir="ltr">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#4f46e5" />
+        <link rel="apple-touch-icon" href="/logo192.png" />
+      </head>
       <body className={`${dmSans.className} antialiased`}>
         <Toaster position="top-center" />
         <Header />
