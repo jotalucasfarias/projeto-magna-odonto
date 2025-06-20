@@ -55,6 +55,16 @@ export const validarHorario = (horario: string): string | undefined => {
 };
 
 /**
+ * Valida o campo consentimento
+ */
+export const validarConsentimento = (consent: boolean): string | undefined => {
+  if (!consent) {
+    return "É necessário aceitar o termo de consentimento para continuar";
+  }
+  return undefined;
+};
+
+/**
  * Valida um campo específico do formulário
  */
 export const validarCampo = (
@@ -72,6 +82,8 @@ export const validarCampo = (
       return validarCampoData(dadosFormulario.date);
     case "timeSlot":
       return validarHorario(dadosFormulario.timeSlot);
+    case "consent":
+      return validarConsentimento(dadosFormulario.consent);
     default:
       return undefined;
   }
@@ -92,6 +104,9 @@ export const validarCamposEtapa = (
 
     const erroTelefone = validarTelefone(dadosFormulario.phone);
     if (erroTelefone) erros.phone = erroTelefone;
+
+    const erroConsent = validarConsentimento(dadosFormulario.consent);
+    if (erroConsent) erros.consent = erroConsent;
   } else if (etapa === 2) {
     const erroServico = validarServico(dadosFormulario.service);
     if (erroServico) erros.service = erroServico;

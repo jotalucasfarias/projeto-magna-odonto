@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { appointmentService } from "@/services/appointment";
@@ -18,6 +17,7 @@ export const useFormularioAgendamento = () => {
     date: "",
     timeSlot: "",
     message: "",
+    consent: false,
   });
   const [erros, setErros] = useState<ErrosValidacao>({});
   const [dataSelecionada, setDataSelecionada] = useState<string>("");
@@ -53,7 +53,7 @@ export const useFormularioAgendamento = () => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
 
     if (name === "date") {
       setDataSelecionada(value);
@@ -65,6 +65,11 @@ export const useFormularioAgendamento = () => {
       setDadosFormulario(prev => ({
         ...prev,
         [name]: formatarTelefone(value),
+      }));
+    } else if (type === "checkbox") {
+      setDadosFormulario(prev => ({
+        ...prev,
+        [name]: checked,
       }));
     } else {
       setDadosFormulario(prev => ({ ...prev, [name]: value }));
@@ -81,7 +86,7 @@ export const useFormularioAgendamento = () => {
   const validarEtapaAtual = (): boolean => {
     const camposParaValidar =
       etapa === 1
-        ? ["name", "phone"]
+        ? ["name", "phone", "consent"]
         : etapa === 2
         ? ["service", "date", "timeSlot"]
         : [];

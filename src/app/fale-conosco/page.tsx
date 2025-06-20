@@ -45,7 +45,7 @@ export default function ContatoPage() {
 
   const formatPhoneNumber = (value: string) => {
     const numbers = value.replace(/\D/g, "");
-    
+
     if (numbers.length <= 11) {
       let phone = "";
       if (numbers.length > 0) {
@@ -78,7 +78,7 @@ export default function ContatoPage() {
         status: "não-lido", // Status inicial da mensagem
         createdAt: serverTimestamp(), // Adiciona timestamp
       });
-      
+
       toast.success("Mensagem enviada com sucesso! Em breve entraremos em contato.");
       setFormData({
         name: "",
@@ -120,7 +120,7 @@ export default function ContatoPage() {
                   <h2 className="text-2xl font-bold text-gray-headline mb-6">
                     Informações de Contato
                   </h2>
-                  
+
                   <ul className="space-y-6">
                     <li className="flex items-start">
                       <FontAwesomeIcon
@@ -138,9 +138,9 @@ export default function ContatoPage() {
                         icon={faPhone}
                         className="text-xl text-primary-dark-blue"
                       />
-                      <a 
-                        href="https://api.whatsapp.com/send?phone=556996021979" 
-                        target="_blank" 
+                      <a
+                        href="https://api.whatsapp.com/send?phone=556996021979"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="text-gray-paragraph ml-4 hover:text-primary-blue transition-colors"
                       >
@@ -152,7 +152,9 @@ export default function ContatoPage() {
                         icon={faEnvelope}
                         className="text-xl text-primary-dark-blue"
                       />
-                      <span className="text-gray-paragraph ml-4">magnamartinha@hotmail.com</span>
+                      <span className="text-gray-paragraph ml-4">
+                        magnamartinha@hotmail.com
+                      </span>
                     </li>
                     <li className="flex items-start">
                       <FontAwesomeIcon
@@ -173,7 +175,8 @@ export default function ContatoPage() {
                     Agende sua Consulta
                   </h2>
                   <p className="text-gray-paragraph mb-4">
-                    Prefere agendar diretamente? Clique no botão abaixo para marcar sua consulta.
+                    Prefere agendar diretamente? Clique no botão abaixo para marcar
+                    sua consulta.
                   </p>
                   <Button text="AGENDAR CONSULTA" onClick={openModal} />
                 </div>
@@ -187,7 +190,10 @@ export default function ContatoPage() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-headline mb-1">
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-headline mb-1"
+                      >
                         Nome completo
                       </label>
                       <input
@@ -203,7 +209,10 @@ export default function ContatoPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-headline mb-1">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-headline mb-1"
+                      >
                         E-mail
                       </label>
                       <input
@@ -221,7 +230,10 @@ export default function ContatoPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-headline mb-1">
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-headline mb-1"
+                      >
                         Telefone
                       </label>
                       <input
@@ -236,7 +248,10 @@ export default function ContatoPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-headline mb-1">
+                      <label
+                        htmlFor="subject"
+                        className="block text-sm font-medium text-gray-headline mb-1"
+                      >
                         Assunto
                       </label>
                       <select
@@ -248,17 +263,24 @@ export default function ContatoPage() {
                         required
                       >
                         <option value="">Selecione um assunto</option>
-                        <option value="Dúvidas sobre serviços">Dúvidas sobre serviços</option>
+                        <option value="Dúvidas sobre serviços">
+                          Dúvidas sobre serviços
+                        </option>
                         <option value="Orçamento">Orçamento</option>
                         <option value="Cancelamento">Cancelamento</option>
-                        <option value="Elogio ou Sugestão">Elogio ou Sugestão</option>
+                        <option value="Elogio ou Sugestão">
+                          Elogio ou Sugestão
+                        </option>
                         <option value="Outros">Outros</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-headline mb-1">
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium text-gray-headline mb-1"
+                    >
                       Mensagem
                     </label>
                     <textarea
@@ -273,6 +295,32 @@ export default function ContatoPage() {
                     />
                   </div>
 
+                  {/* Termo de consentimento */}
+                  <div className="flex items-start mb-2">
+                    <input
+                      type="checkbox"
+                      id="consent"
+                      name="consent"
+                      required
+                      className="mt-1 mr-2"
+                    />
+                    <label
+                      htmlFor="consent"
+                      className="text-sm text-gray-600"
+                    >
+                      Autorizo o uso dos meus dados pessoais (nome, e-mail, telefone e mensagem) para fins de contato, esclarecimento de dúvidas e agendamento de consultas, conforme a{" "}
+                      <a
+                        href="/politica-de-privacidade"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline text-primary-blue hover:text-primary-dark-blue"
+                      >
+                        Política de Privacidade
+                      </a>
+                      . Estou ciente de que meus dados serão tratados com segurança e não serão compartilhados com terceiros sem meu consentimento, em conformidade com a LGPD.
+                    </label>
+                  </div>
+
                   <div>
                     <button
                       type="submit"
@@ -281,8 +329,8 @@ export default function ContatoPage() {
                     >
                       {loading ? (
                         <span className="flex items-center justify-center">
-                          <svg 
-                            className="animate-spin h-5 w-5 mr-2" 
+                          <svg
+                            className="animate-spin h-5 w-5 mr-2"
                             viewBox="0 0 24 24"
                           >
                             <circle
@@ -320,13 +368,13 @@ export default function ContatoPage() {
               Como Chegar
             </h2>
             <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3943.321488175978!2d-63.874666!3d-8.7608199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92325c71cdd4b617%3A0xd49b310dfd486ee5!2sAv.%20Jatuarana%2C%204941%20-%20Nova%20Floresta%2C%20Porto%20Velho%20-%20RO%2C%2076807-441!5e0!3m2!1spt-BR!2sbr!4v1702070172860!5m2!1spt-BR!2sbr" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen 
-                loading="lazy" 
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3943.321488175978!2d-63.874666!3d-8.7608199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92325c71cdd4b617%3A0xd49b310dfd486ee5!2sAv.%20Jatuarana%2C%204941%20-%20Nova%20Floresta%2C%20Porto%20Velho%20-%20RO%2C%2076807-441!5e0!3m2!1spt-BR!2sbr!4v1702070172860!5m2!1spt-BR!2sbr"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Mapa de localização da Clínica Magna Odonto em Porto Velho"
               ></iframe>

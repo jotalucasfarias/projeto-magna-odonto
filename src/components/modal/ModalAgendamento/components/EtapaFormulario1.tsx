@@ -72,6 +72,38 @@ export const EtapaFormulario1 = ({
           <p className="mt-1 text-sm text-red-500">{erros.phone}</p>
         )}
       </div>
+      {/* Termo de consentimento */}
+      <div className="flex items-start mt-4">
+        <input
+          type="checkbox"
+          id="consent-agendamento"
+          name="consent"
+          checked={dadosFormulario.consent}
+          onChange={handleChange}
+          required
+          className="mt-1 mr-2"
+        />
+        <label
+          htmlFor="consent-agendamento"
+          className="text-xs text-gray-600"
+        >
+          Autorizo o uso dos meus dados pessoais para fins de contato e agendamento,
+          conforme a{" "}
+          <a
+            href="/politica-de-privacidade"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-primary-blue hover:text-primary-dark-blue"
+          >
+            Política de Privacidade
+          </a>
+          . Estou ciente de que meus dados serão tratados com segurança e não
+          serão compartilhados sem meu consentimento, em conformidade com a LGPD.
+        </label>
+      </div>
+      {erros.consent && camposModificados.consent && (
+        <p className="mt-1 text-xs text-red-500">{erros.consent}</p>
+      )}
     </div>
   );
 };

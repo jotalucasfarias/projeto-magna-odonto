@@ -7,6 +7,7 @@ export interface DadosFormulario {
   date: string;
   timeSlot: string;
   message: string;
+  consent: boolean;
 }
 
 export interface ErrosValidacao {
@@ -15,6 +16,7 @@ export interface ErrosValidacao {
   service?: string;
   date?: string;
   timeSlot?: string;
+  consent?: string;
 }
 
 export interface PropsModalAgendamento {
