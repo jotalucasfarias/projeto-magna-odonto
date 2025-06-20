@@ -4,6 +4,9 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/next"
+import Script from "next/script";
+
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -25,7 +28,14 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    }
   },
+  viewport: "width=device-width, initial-scale=1",
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -47,7 +57,8 @@ export const metadata: Metadata = {
     title: "Clínica Magna Odonto em Porto Velho | Dentista, Ortodontia, Implantes e Tratamentos Odontológicos",
     description: "Tratamentos odontológicos completos em Porto Velho: ortodontia, implantes, avaliação, canal, próteses, gengivoplastia e mais. Atendimento humanizado e tecnologia moderna.",
     images: [`${siteUrl}/og-image.png`], 
-  },  verification: {
+  },
+  verification: {
     google: "googleb1763076fe4934ae", // Token de verificação do Google Search Console
   },
   alternates: {
@@ -56,6 +67,12 @@ export const metadata: Metadata = {
       'pt-BR': siteUrl,
     },
   },
+  other: {
+    'geo.region': 'BR-RO',
+    'geo.placename': 'Porto Velho',
+    'geo.position': '-8.761160;-63.902150',
+    'ICBM': '-8.761160, -63.902150',
+  }
 };
 
 
@@ -71,11 +88,84 @@ export default function RootLayout({
         <meta name="theme-color" content="#4f46e5" />
         <link rel="apple-touch-icon" href="/logo192.png" />
       </head>
-      <body className={`${dmSans.className} antialiased`}>
+      <body className={`${dmSans.className} antialiased`}>        <Script id="schema-dental-clinic" type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Dentist",
+              "name": "Clínica Magna Odonto",
+              "image": "${siteUrl}/og-image.png",
+              "url": "${siteUrl}",
+              "email": "magnamartinha@hotmail.com",
+              "telephone": "+5569996021979",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Jatuarana, 4941, sala 01, Nova Floresta",
+                "addressLocality": "Porto Velho",
+                "addressRegion": "RO",
+                "postalCode": "76807-441",
+                "addressCountry": "BR"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": -8.761160,
+                "longitude": -63.902150
+              },
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  "opens": "08:00",
+                  "closes": "11:30"
+                },
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  "opens": "14:00",
+                  "closes": "18:00"
+                }
+              ],
+              "sameAs": [
+                "https://www.facebook.com/magnaodonto",
+                "https://www.instagram.com/magnaodontoclinica",
+                "https://api.whatsapp.com/send?phone=556996021979"
+              ],              "priceRange": "$$",
+              "paymentAccepted": "Pagamento apenas presencial",
+              "availableService": [
+                {
+                  "@type": "MedicalProcedure",
+                  "name": "Ortodontia",
+                  "procedureType": "http://schema.org/MedicalTherapy"
+                },
+                {
+                  "@type": "MedicalProcedure",
+                  "name": "Implantes Dentários",
+                  "procedureType": "http://schema.org/MedicalTherapy"
+                },
+                {
+                  "@type": "MedicalProcedure",
+                  "name": "Tratamento de Canal",
+                  "procedureType": "http://schema.org/MedicalTherapy"
+                },
+                {
+                  "@type": "MedicalProcedure",
+                  "name": "Próteses Dentárias",
+                  "procedureType": "http://schema.org/MedicalTherapy"
+                },
+                {
+                  "@type": "MedicalProcedure",
+                  "name": "Gengivoplastia",
+                  "procedureType": "http://schema.org/MedicalTherapy"
+                }
+              ]
+            }
+          `}
+        </Script>
         <Toaster position="top-center" />
         <Header />
         <main id="main-content">{children}</main>
         <Footer />
+         <Analytics />
       </body>
     </html>
   );
