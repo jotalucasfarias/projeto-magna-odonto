@@ -73,12 +73,28 @@ export default function ReportsPanel() {
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
-      const { height } = page.getSize();
+      const { width, height } = page.getSize();
       const margin = 40;
       const lineHeight = 20;
       let y = height - margin;
 
-      // Título
+      try {
+        const logoUrl = '/logo-clinica.png';
+        const response = await fetch(logoUrl);
+        if (response.ok) {
+          const logoImageBytes = await response.arrayBuffer();
+          const logoImage = await pdfDoc.embedPng(logoImageBytes);
+          const logoDims = logoImage.scale(0.33);
+          page.drawImage(logoImage, {
+            x: (width - logoDims.width) / 2,
+            y: (height - logoDims.height) / 2,
+            width: logoDims.width,
+            height: logoDims.height,
+            opacity: 0.12,
+          });
+        }
+      } catch {}
+
       const title = `Relatório de Agendamentos - ${selectedService === 'todos' ? 'Todos os serviços' : selectedService}`;
       const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       page.drawText(title, { x: margin, y, size: 15, font, color: rgb(0.16, 0.5, 0.73) });
@@ -95,40 +111,61 @@ export default function ReportsPanel() {
       page.drawText(`Total de agendamentos: ${reportData.length}`, { x: margin, y, size: 11, font: await pdfDoc.embedFont(StandardFonts.Helvetica) });
       y -= lineHeight;
 
+      // Espaço extra antes do cabeçalho da tabela
+      y -= 10;
+
       // Cabeçalho da tabela
       const headers = ['Nome', 'Telefone', 'Serviço', 'Data', 'Horário'];
+      // Calcular larguras proporcionais para ocupar toda a largura da página
+      const tableWidth = width - margin * 2;
+      const colWidths = [0.28, 0.18, 0.24, 0.15, 0.15].map(p => Math.floor(tableWidth * p));
+      // Ajustar para somar exatamente tableWidth
+      const widthDiff = tableWidth - colWidths.reduce((a, b) => a + b, 0);
+      colWidths[0] += widthDiff; // Corrige diferença de arredondamento
       let x = margin;
-      const colWidths = [120, 80, 100, 60, 60];
-      headers.forEach((header, idx) => {
-        page.drawText(header, { x, y, size: 11, font, color: rgb(1, 1, 1), });
-        x += colWidths[idx];
-      });
-      y -= lineHeight;
-      x = margin;
 
       // Fundo do cabeçalho
       page.drawRectangle({
         x: margin - 2,
-        y: y + 2,
-        width: colWidths.reduce((a, b) => a + b, 0) + 4,
-        height: lineHeight,
+        y: y - 2,
+        width: tableWidth + 4,
+        height: lineHeight + 4,
         color: rgb(0.16, 0.5, 0.73),
         opacity: 0.9,
         borderColor: rgb(0.16, 0.5, 0.73),
       });
 
-      // Reescrever o cabeçalho por cima do fundo
-      x = margin;
+      // Escrever o cabeçalho
       headers.forEach((header, idx) => {
-        page.drawText(header, { x, y: y + 5, size: 11, font, color: rgb(1, 1, 1) });
+        page.drawText(header, { x, y: y + 4, size: 11, font, color: rgb(1, 1, 1) });
         x += colWidths[idx];
       });
-      y -= lineHeight;
+      y -= lineHeight + 4;
+
+      // Função para quebrar texto em múltiplas linhas
+      function wrapText(text: string, font: typeof rowFont, size: number, maxWidth: number): string[] {
+        const words = text.split(' ');
+        const lines: string[] = [];
+        let currentLine = '';
+        for (const word of words) {
+          const testLine = currentLine ? currentLine + ' ' + word : word;
+          const testWidth = font.widthOfTextAtSize(testLine, size);
+          if (testWidth > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+        return lines;
+      }
 
       // Dados da tabela
       const rowFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
       for (const item of reportData) {
         x = margin;
+        // Quebra de texto para cada célula
         const row = [
           item.name,
           item.phone,
@@ -136,13 +173,27 @@ export default function ReportsPanel() {
           formatDateToBrazilian(item.date),
           item.timeSlot,
         ];
-        row.forEach((cell, idx) => {
-          page.drawText(cell, { x, y, size: 10, font: rowFont, color: rgb(0, 0, 0) });
-          x += colWidths[idx];
-        });
-        y -= lineHeight;
-        if (y < margin + lineHeight) {
-          // Nova página se necessário
+        // Quebrar cada célula conforme largura da coluna
+        const wrappedCells = row.map((cell, idx) => wrapText(cell, rowFont, 10, colWidths[idx] - 4));
+        // Descobrir quantas linhas serão necessárias para esta linha
+        const maxLines = Math.max(...wrappedCells.map(lines => lines.length));
+        // Escrever cada linha da célula
+        for (let lineIdx = 0; lineIdx < maxLines; lineIdx++) {
+          let cellX = margin;
+          for (let colIdx = 0; colIdx < row.length; colIdx++) {
+            const line = wrappedCells[colIdx][lineIdx] || '';
+            page.drawText(line, { x: cellX, y, size: 10, font: rowFont, color: rgb(0, 0, 0) });
+            cellX += colWidths[colIdx];
+          }
+          y -= lineHeight - 6; // Menor espaçamento entre linhas da mesma célula
+          if (y < margin + lineHeight * 2) {
+            // Nova página se necessário
+            y = height - margin;
+            pdfDoc.addPage();
+          }
+        }
+        y -= 6; // Espaço extra entre linhas da tabela
+        if (y < margin + lineHeight * 2) {
           y = height - margin;
           pdfDoc.addPage();
         }
