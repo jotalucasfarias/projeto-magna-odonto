@@ -308,7 +308,7 @@ export default function ContatoPage() {
                       htmlFor="consent"
                       className="text-sm text-gray-600"
                     >
-                      Autorizo o uso dos meus dados pessoais (nome, e-mail, telefone e mensagem) para fins de contato, esclarecimento de dúvidas e agendamento de consultas, conforme a{" "}
+                      Li e concordo com a utilização dos meus dados para contato e agendamento, conforme a{" "}
                       <a
                         href="/politica-de-privacidade"
                         target="_blank"
@@ -317,7 +317,7 @@ export default function ContatoPage() {
                       >
                         Política de Privacidade
                       </a>
-                      . Estou ciente de que meus dados serão tratados com segurança e não serão compartilhados com terceiros sem meu consentimento, em conformidade com a LGPD.
+                      .
                     </label>
                   </div>
 

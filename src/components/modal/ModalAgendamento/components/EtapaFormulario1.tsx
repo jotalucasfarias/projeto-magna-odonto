@@ -87,8 +87,7 @@ export const EtapaFormulario1 = ({
           htmlFor="consent-agendamento"
           className="text-xs text-gray-600"
         >
-          Autorizo o uso dos meus dados pessoais para fins de contato e agendamento,
-          conforme a{" "}
+          Li e concordo com a utilização dos meus dados para contato e agendamento, conforme a{" "}
           <a
             href="/politica-de-privacidade"
             target="_blank"
@@ -97,8 +96,7 @@ export const EtapaFormulario1 = ({
           >
             Política de Privacidade
           </a>
-          . Estou ciente de que meus dados serão tratados com segurança e não
-          serão compartilhados sem meu consentimento, em conformidade com a LGPD.
+          .
         </label>
       </div>
       {erros.consent && camposModificados.consent && (
