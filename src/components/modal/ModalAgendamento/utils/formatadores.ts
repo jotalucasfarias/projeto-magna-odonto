@@ -31,9 +31,8 @@ export const formatarTelefone = (valor: string): string => {
 export const formatarData = (dataString: string): string => {
   if (!dataString) return "";
 
-  try {
-    return new Date(dataString).toLocaleDateString("pt-BR");
-  } catch {
-    return dataString;
-  }
+  const partes = dataString.split("-");
+  if (partes.length !== 3) return dataString;
+  const [ano, mes, dia] = partes;
+  return `${dia}/${mes}/${ano}`;
 };
