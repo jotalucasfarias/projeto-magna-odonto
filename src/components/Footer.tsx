@@ -22,7 +22,7 @@ import { useClinicSettings } from "@/hooks/useClinicSettings";
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { settings, isLoading } = useClinicSettings();
-  const [structuredData, setStructuredData] = useState<Record<string, any>>({});
+  const [structuredData, setStructuredData] = useState<Record<string, unknown>>({});
 
   // Preparar os dados estruturados para SEO quando as configurações carregarem
   useEffect(() => {

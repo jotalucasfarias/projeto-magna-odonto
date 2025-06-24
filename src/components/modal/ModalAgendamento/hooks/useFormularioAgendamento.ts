@@ -25,8 +25,8 @@ export const useFormularioAgendamento = () => {
   const [camposModificados, setCamposModificados] = useState<Record<string, boolean>>({});
 
   /** Valida um campo específico */
-  const validarCampoFormulario = useCallback((campo: string): boolean => {
-    const erro = validarCampo(campo, dadosFormulario);
+  const validarCampoFormulario = useCallback(async (campo: string): Promise<boolean> => {
+    const erro = await validarCampo(campo, dadosFormulario);
 
     setErros(prev => {
       const novosErros = { ...prev };
@@ -45,7 +45,9 @@ export const useFormularioAgendamento = () => {
   useEffect(() => {
     Object.keys(camposModificados)
       .filter(campo => camposModificados[campo])
-      .forEach(campo => validarCampoFormulario(campo));
+      .forEach(campo => {
+        validarCampoFormulario(campo);
+      });
   }, [camposModificados, validarCampoFormulario]);
 
   /** Manipula mudanças nos campos do formulário */
@@ -99,7 +101,7 @@ export const useFormularioAgendamento = () => {
     });
     setCamposModificados(novosCamposModificados);
 
-    const errosEtapa = validarCamposEtapa(etapa, dadosFormulario);
+    const errosEtapa = await validarCamposEtapa(etapa, dadosFormulario);
     
     // Validação adicional para datas de fechamento especial
     if (etapa === 2 && dadosFormulario.date) {
@@ -138,7 +140,7 @@ export const useFormularioAgendamento = () => {
 
   // Submete o formulário
   const enviarFormulario = async () => {
-    if (!validarEtapaAtual()) return;
+    if (!(await validarEtapaAtual())) return;
 
     setCarregando(true);
     try {

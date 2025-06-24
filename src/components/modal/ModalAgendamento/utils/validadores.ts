@@ -39,8 +39,8 @@ export const validarServico = (servico: string): string | undefined => {
 /**
  * Valida o campo data
  */
-export const validarCampoData = (data: string): string | undefined => {
-  const validacao = validarData(data);
+export const validarCampoData = async (data: string): Promise<string | undefined> => {
+  const validacao = await validarData(data);
   return validacao.isValid ? undefined : validacao.message;
 };
 
@@ -67,10 +67,10 @@ export const validarConsentimento = (consent: boolean): string | undefined => {
 /**
  * Valida um campo específico do formulário
  */
-export const validarCampo = (
+export const validarCampo = async (
   campo: string,
   dadosFormulario: DadosFormulario
-): string | undefined => {
+): Promise<string | undefined> => {
   switch (campo) {
     case "name":
       return validarNome(dadosFormulario.name);
@@ -79,7 +79,7 @@ export const validarCampo = (
     case "service":
       return validarServico(dadosFormulario.service);
     case "date":
-      return validarCampoData(dadosFormulario.date);
+      return await validarCampoData(dadosFormulario.date);
     case "timeSlot":
       return validarHorario(dadosFormulario.timeSlot);
     case "consent":
@@ -92,10 +92,10 @@ export const validarCampo = (
 /**
  * Valida os campos necessários para uma etapa específica do formulário
  */
-export const validarCamposEtapa = (
+export const validarCamposEtapa = async (
   etapa: number,
   dadosFormulario: DadosFormulario
-): ErrosValidacao => {
+): Promise<ErrosValidacao> => {
   const erros: ErrosValidacao = {};
 
   if (etapa === 1) {
@@ -111,7 +111,7 @@ export const validarCamposEtapa = (
     const erroServico = validarServico(dadosFormulario.service);
     if (erroServico) erros.service = erroServico;
 
-    const erroData = validarCampoData(dadosFormulario.date);
+    const erroData = await validarCampoData(dadosFormulario.date);
     if (erroData) erros.date = erroData;
 
     const erroHorario = validarHorario(dadosFormulario.timeSlot);
