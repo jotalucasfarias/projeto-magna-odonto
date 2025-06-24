@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "./ui/Button";
 import AppointmentModal from "./modal/ModalAgendamento";
+import { useClinicSettings } from "@/hooks/useClinicSettings";
 
 export function Contact() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { settings, isLoading } = useClinicSettings();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -18,21 +19,14 @@ export function Contact() {
     setIsModalOpen(false);
   };
 
-  // Simula o carregamento dos recursos
-  useEffect(() => {
-    const preloadResources = async () => {
-      try {
-        // Aguarda um momento para garantir que outros recursos da página sejam carregados
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error preloading resources:", error);
-        setIsLoading(false);
-      }
-    };
-
-    preloadResources();
-  }, []);
+  // Função para formatar o endereço
+  const formatAddress = () => {
+    if (!settings) return "";
+    return `${settings.address.street} n°${settings.address.number}${
+      settings.address.complement ? `, ${settings.address.complement}` : ""
+    }
+    ${settings.address.neighborhood}, ${settings.address.city} - ${settings.address.state}`;
+  };
 
   return (
     <section
@@ -74,9 +68,7 @@ export function Contact() {
                     className="text-2xl text-primary-dark-blue"
                   />
                   <span className="text-gray-paragraph ml-2">
-                    Av. Jatuarana n°4941, Nova Floresta. Sala 01
-                    <br />
-                    Porto Velho - RO
+                    {formatAddress()}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -84,7 +76,7 @@ export function Contact() {
                     icon={faPhone}
                     className="text-2xl text-primary-dark-blue"
                   />
-                  <span className="text-gray-paragraph ml-1">(69) 99602-1979</span>
+                  <span className="text-gray-paragraph ml-1">{settings?.contact.phone}</span>
                 </div>
               </div>
 
@@ -108,7 +100,7 @@ export function Contact() {
               allowFullScreen={true} 
               loading="lazy" 
               referrerPolicy="no-referrer-when-downgrade"
-              title="Mapa de localização da Clínica Magna Odonto em Porto Velho"
+              title={`Mapa de localização da ${settings?.name || 'Clínica'} em ${settings?.address.city || ''}`}
               className="rounded-lg"
             ></iframe>
           )}

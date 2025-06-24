@@ -10,12 +10,19 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { verificarFeriado } from "@/components/modal/ModalAgendamento/utils/utilsHorarios";
 
 class AppointmentService {
   private appointmentsCollection = collection(db, "appointments");
 
   async checkAvailability(date: string, timeSlot: string): Promise<boolean> {
     try {
+      // Primeiro verificar se é um feriado ou dia especial
+      const { isHoliday } = await verificarFeriado(date);
+      if (isHoliday) {
+        return false; // Não está disponível se for feriado
+      }
+
       const q = query(
         this.appointmentsCollection,
         where("date", "==", date),
@@ -35,6 +42,12 @@ class AppointmentService {
     allTimeSlots: string[]
   ): Promise<string[]> {
     try {
+      // Primeiro verificar se é um feriado ou dia especial
+      const { isHoliday } = await verificarFeriado(date);
+      if (isHoliday) {
+        return []; // Nenhum horário disponível em feriados
+      }
+
       const q = query(this.appointmentsCollection, where("date", "==", date));
 
       const snapshot = await getDocs(q);

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/Button";
 import { toast, Toaster } from "react-hot-toast";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
+import { useClinicSettings } from "@/hooks/useClinicSettings";
 
 export default function ContatoPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +25,7 @@ export default function ContatoPage() {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const { settings, isLoading } = useClinicSettings();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -95,6 +97,48 @@ export default function ContatoPage() {
     }
   };
 
+  // Função para formatar o endereço completo
+  const formatFullAddress = () => {
+    if (!settings) return "";
+    return `${settings.address.street} n°${settings.address.number}${
+      settings.address.complement ? ` ${settings.address.complement}` : ""
+    }
+    ${settings.address.neighborhood}, ${settings.address.city} - ${settings.address.state}`;
+  };
+
+  // Função para formatar o horário de funcionamento
+  const formatBusinessHours = () => {
+    if (!settings) return "";
+    let hours = `Segunda a Sexta: ${settings.businessHours.weekdaysStart} às ${settings.businessHours.weekdaysEnd}\n${settings.businessHours.weekdaysAfternoonStart} às ${settings.businessHours.weekdaysAfternoonEnd}`;
+
+    if (settings.businessHours.saturday) {
+      hours += `\nSábado: ${settings.businessHours.saturdayStart} às ${settings.businessHours.saturdayEnd}`;
+    }
+
+    return hours;
+  };
+
+  // Em caso de carregamento, mostra um placeholder simplificado
+  if (isLoading) {
+    return (
+      <main>
+        <div className="bg-primary-dark-blue text-white py-16">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Fale Conosco</h1>
+          </div>
+        </div>
+        <div className="py-16 px-4">
+          <div className="container mx-auto max-w-7xl">
+            <div className="animate-pulse space-y-8">
+              <div className="h-10 bg-gray-200 rounded w-1/4 mb-6"></div>
+              <div className="h-24 bg-gray-200 rounded w-full"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <>
       <Toaster position="top-center" />
@@ -128,9 +172,7 @@ export default function ContatoPage() {
                         className="text-xl text-primary-dark-blue mt-1"
                       />
                       <span className="text-gray-paragraph ml-4">
-                        Av. Jatuarana n°4941 sala 01 Nova Floresta.
-                        <br />
-                        Porto Velho - RO
+                        {formatFullAddress()}
                       </span>
                     </li>
                     <li className="flex items-center">
@@ -139,12 +181,12 @@ export default function ContatoPage() {
                         className="text-xl text-primary-dark-blue"
                       />
                       <a
-                        href="https://api.whatsapp.com/send?phone=556996021979"
+                        href={`https://api.whatsapp.com/send?phone=${settings?.contact.whatsapp}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-gray-paragraph ml-4 hover:text-primary-blue transition-colors"
                       >
-                        (69) 99602-1979
+                        {settings?.contact.phone}
                       </a>
                     </li>
                     <li className="flex items-center">
@@ -153,7 +195,7 @@ export default function ContatoPage() {
                         className="text-xl text-primary-dark-blue"
                       />
                       <span className="text-gray-paragraph ml-4">
-                        magnamartinha@hotmail.com
+                        {settings?.contact.email}
                       </span>
                     </li>
                     <li className="flex items-start">
@@ -163,8 +205,9 @@ export default function ContatoPage() {
                       />
                       <div className="text-gray-paragraph ml-4">
                         <p className="mb-1 font-medium">Horário de Atendimento</p>
-                        <p className="mb-0">Segunda a Sexta: 08:00 às 11:30</p>
-                        <p className="mb-0">14:00 às 18:00</p>
+                        <p className="mb-0 whitespace-pre-line">
+                          {formatBusinessHours()}
+                        </p>
                       </div>
                     </li>
                   </ul>
@@ -376,7 +419,7 @@ export default function ContatoPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Mapa de localização da Clínica Magna Odonto em Porto Velho"
+                title={`Mapa de localização da ${settings?.name} em ${settings?.address.city}`}
               ></iframe>
             </div>
           </div>

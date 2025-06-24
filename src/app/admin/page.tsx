@@ -6,13 +6,19 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import AppointmentsPanel from "@/components/admin/AppointmentsPanel";
 import ReportsPanel from "@/components/admin/ReportsPanel";
 import MessagesPanel from "@/components/admin/MessagesPanel";
+import ClinicSettingsPanel from "@/components/admin/ClinicSettingsPanel";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartBar, faMessage, faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faChartBar, 
+  faMessage, 
+  faCalendarCheck,
+  faCog
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminDashboard() {
   const { isLoading, isAuthenticated, handleLogout } = useAuth();
-  const [activeTab, setActiveTab] = useState<"appointments" | "reports" | "messages">("appointments");
+  const [activeTab, setActiveTab] = useState<"appointments" | "reports" | "messages" | "settings">("appointments");
   const [isMobile, setIsMobile] = useState(false);
 
   // Detectar tamanho da tela
@@ -50,6 +56,8 @@ export default function AdminDashboard() {
         return "Consulte relatórios e estatísticas sobre os atendimentos da clínica.";
       case "messages":
         return "Visualize e responda as mensagens enviadas pelos pacientes.";
+      case "settings":
+        return "Atualize as informações da clínica exibidas no site.";
     }
   };
 
@@ -62,6 +70,8 @@ export default function AdminDashboard() {
         return faChartBar;
       case "messages":
         return faMessage;
+      case "settings":
+        return faCog;
     }
   };
 
@@ -79,11 +89,12 @@ export default function AdminDashboard() {
                 <h2 className="text-lg font-bold text-primary-blue flex items-center">
                   <FontAwesomeIcon icon={getActiveIcon()} className="mr-2" />
                   {activeTab === "appointments" ? "Agendamentos" : 
-                   activeTab === "reports" ? "Relatórios" : "Mensagens"}
+                   activeTab === "reports" ? "Relatórios" : 
+                   activeTab === "messages" ? "Mensagens" : "Configurações"}
                 </h2>
               </div>
               
-              <div className="grid grid-cols-3 gap-1 text-center">
+              <div className="grid grid-cols-4 gap-1 text-center">
                 <button
                   onClick={() => setActiveTab("appointments")}
                   className={`py-2 px-1 rounded-md ${
@@ -116,6 +127,17 @@ export default function AdminDashboard() {
                 >
                   <FontAwesomeIcon icon={faMessage} className="mb-1" />
                   Mensagens
+                </button>
+                <button
+                  onClick={() => setActiveTab("settings")}
+                  className={`py-2 px-1 rounded-md ${
+                    activeTab === "settings"
+                      ? "bg-primary-blue text-white font-medium"
+                      : "bg-gray-100 text-gray-600"
+                  } text-xs flex flex-col items-center justify-center`}
+                >
+                  <FontAwesomeIcon icon={faCog} className="mb-1" />
+                  Config
                 </button>
               </div>
             </div>
@@ -156,6 +178,17 @@ export default function AdminDashboard() {
                   <FontAwesomeIcon icon={faMessage} className="mr-2" />
                   Mensagens
                 </button>
+                <button
+                  onClick={() => setActiveTab("settings")}
+                  className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
+                    activeTab === "settings"
+                      ? "border-primary-blue text-primary-blue font-bold text-base"
+                      : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faCog} className="mr-2" />
+                  Configurações
+                </button>
               </nav>
             </div>
           )}
@@ -167,6 +200,7 @@ export default function AdminDashboard() {
         {activeTab === "appointments" && <AppointmentsPanel />}
         {activeTab === "reports" && <ReportsPanel />}
         {activeTab === "messages" && <MessagesPanel />}
+        {activeTab === "settings" && <ClinicSettingsPanel />}
       </div>
     </div>
   );

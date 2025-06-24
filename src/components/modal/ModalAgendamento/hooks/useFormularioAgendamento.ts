@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import { appointmentService } from "@/services/appointment";
 import { formatarTelefone } from "../utils/formatadores";
 import { validarCampo, validarCamposEtapa } from "../utils/validadores";
+import { validarData } from "../utils/utilsHorarios";
 import type { DadosFormulario, ErrosValidacao } from "../types";
 
 /** Hook para gerenciar o estado e a lógica do formulário de agendamento */
@@ -84,7 +85,7 @@ export const useFormularioAgendamento = () => {
   };
 
   /** Valida todos os campos da etapa atual */
-  const validarEtapaAtual = (): boolean => {
+  const validarEtapaAtual = async (): Promise<boolean> => {
     const camposParaValidar =
       etapa === 1
         ? ["name", "phone", "consent"]
@@ -99,6 +100,15 @@ export const useFormularioAgendamento = () => {
     setCamposModificados(novosCamposModificados);
 
     const errosEtapa = validarCamposEtapa(etapa, dadosFormulario);
+    
+    // Validação adicional para datas de fechamento especial
+    if (etapa === 2 && dadosFormulario.date) {
+      const validacaoData = await validarData(dadosFormulario.date);
+      if (!validacaoData.isValid) {
+        errosEtapa.date = validacaoData.message;
+      }
+    }
+    
     setErros(errosEtapa);
 
     const temErros = Object.keys(errosEtapa).length > 0;
@@ -113,8 +123,8 @@ export const useFormularioAgendamento = () => {
   };
 
   // Avança para a próxima etapa
-  const avancarEtapa = () => {
-    if (validarEtapaAtual() && etapa < 3) {
+  const avancarEtapa = async () => {
+    if (await validarEtapaAtual() && etapa < 3) {
       setEtapa(prev => prev + 1);
     }
   };

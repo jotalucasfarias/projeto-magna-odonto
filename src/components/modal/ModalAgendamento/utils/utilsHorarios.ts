@@ -55,13 +55,50 @@ export const criarHorariosDisponiveis = (): TimeSlot[] => {
 };
 
 /**
+ * Verifica se uma data é um feriado ou dia de fechamento especial
+ * @param dataString Data no formato YYYY-MM-DD
+ * @returns true se for um feriado ou dia especial, false caso contrário
+ */
+export const verificarFeriado = async (dataString: string): Promise<{isHoliday: boolean; description?: string}> => {
+  try {
+    // Importar de forma dinâmica para evitar problemas de SSR
+    const { db } = await import('@/lib/firebase/config');
+    const { doc, getDoc } = await import('firebase/firestore');
+    
+    const settingsRef = doc(db, 'settings', 'clinic');
+    const settingsSnap = await getDoc(settingsRef);
+    
+    if (settingsSnap.exists()) {
+      const settings = settingsSnap.data();
+      const specialClosures = settings.specialClosures || [];
+      
+      // Verificar se a data está na lista de fechamentos especiais
+      type SpecialClosure = { date: string; description?: string };
+      const specialClosure = (specialClosures as SpecialClosure[]).find((closure) => closure.date === dataString);
+      
+      if (specialClosure) {
+        return { 
+          isHoliday: true,
+          description: specialClosure.description 
+        };
+      }
+    }
+    
+    return { isHoliday: false };
+  } catch (error) {
+    console.error("Erro ao verificar feriados:", error);
+    return { isHoliday: false };
+  }
+};
+
+/**
  * Verifica se uma data é válida para agendamento
  * @param dataString Data no formato YYYY-MM-DD
  * @returns Objeto com status de validade e mensagem de erro
  */
-export const validarData = (
+export const validarData = async (
   dataString: string
-): { isValid: boolean; message?: string } => {
+): Promise<{ isValid: boolean; message?: string }> => {
   if (!dataString) {
     return { isValid: false, message: "Selecione uma data" };
   }
@@ -92,6 +129,15 @@ export const validarData = (
   const diaSemana = data.getDay();
   if (diaSemana === 0 || diaSemana === 6) {
     return { isValid: false, message: "Não atendemos aos finais de semana" };
+  }
+
+  // Verificar se é um feriado ou fechamento especial
+  const { isHoliday, description } = await verificarFeriado(dataString);
+  if (isHoliday) {
+    return { 
+      isValid: false, 
+      message: `Não há atendimento nesta data: ${description || "Fechamento especial"}` 
+    };
   }
 
   return { isValid: true };
