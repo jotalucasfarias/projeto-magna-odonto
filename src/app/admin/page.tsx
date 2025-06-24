@@ -83,7 +83,7 @@ export default function AdminDashboard() {
         {/* Abas de navegação - Design responsivo */}
         <div className="mb-4">
           {isMobile ? (
-            // Layout móvel com menu de dropdown ou grid
+            // Layout móvel com menu de grid
             <div className="bg-white rounded-lg shadow-sm p-2">
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-lg font-bold text-primary-blue flex items-center">
@@ -95,100 +95,114 @@ export default function AdminDashboard() {
               </div>
               
               <div className="grid grid-cols-4 gap-1 text-center">
-                <button
-                  onClick={() => setActiveTab("appointments")}
-                  className={`py-2 px-1 rounded-md ${
-                    activeTab === "appointments"
-                      ? "bg-primary-blue text-white font-medium"
-                      : "bg-gray-100 text-gray-600"
-                  } text-xs flex flex-col items-center justify-center`}
-                >
-                  <FontAwesomeIcon icon={faCalendarCheck} className="mb-1" />
-                  Agenda
-                </button>
-                <button
-                  onClick={() => setActiveTab("reports")}
-                  className={`py-2 px-1 rounded-md ${
-                    activeTab === "reports"
-                      ? "bg-primary-blue text-white font-medium"
-                      : "bg-gray-100 text-gray-600"
-                  } text-xs flex flex-col items-center justify-center`}
-                >
-                  <FontAwesomeIcon icon={faChartBar} className="mb-1" />
-                  Relatórios
-                </button>
-                <button
-                  onClick={() => setActiveTab("messages")}
-                  className={`py-2 px-1 rounded-md ${
-                    activeTab === "messages"
-                      ? "bg-primary-blue text-white font-medium"
-                      : "bg-gray-100 text-gray-600"
-                  } text-xs flex flex-col items-center justify-center`}
-                >
-                  <FontAwesomeIcon icon={faMessage} className="mb-1" />
-                  Mensagens
-                </button>
-                <button
-                  onClick={() => setActiveTab("settings")}
-                  className={`py-2 px-1 rounded-md ${
-                    activeTab === "settings"
-                      ? "bg-primary-blue text-white font-medium"
-                      : "bg-gray-100 text-gray-600"
-                  } text-xs flex flex-col items-center justify-center`}
-                >
-                  <FontAwesomeIcon icon={faCog} className="mb-1" />
-                  Config
-                </button>
+                {/* Primeiros 3 botões */}
+                <div className="col-span-3 grid grid-cols-3 gap-1">
+                  <button
+                    onClick={() => setActiveTab("appointments")}
+                    className={`py-2 px-1 rounded-md ${
+                      activeTab === "appointments"
+                        ? "bg-primary-blue text-white font-medium"
+                        : "bg-gray-100 text-gray-600"
+                    } text-xs flex flex-col items-center justify-center`}
+                  >
+                    <FontAwesomeIcon icon={faCalendarCheck} className="mb-1" />
+                    Agenda
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("reports")}
+                    className={`py-2 px-1 rounded-md ${
+                      activeTab === "reports"
+                        ? "bg-primary-blue text-white font-medium"
+                        : "bg-gray-100 text-gray-600"
+                    } text-xs flex flex-col items-center justify-center`}
+                  >
+                    <FontAwesomeIcon icon={faChartBar} className="mb-1" />
+                    Relatórios
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("messages")}
+                    className={`py-2 px-1 rounded-md ${
+                      activeTab === "messages"
+                        ? "bg-primary-blue text-white font-medium"
+                        : "bg-gray-100 text-gray-600"
+                    } text-xs flex flex-col items-center justify-center`}
+                  >
+                    <FontAwesomeIcon icon={faMessage} className="mb-1" />
+                    Mensagens
+                  </button>
+                </div>
+                
+                {/* Botão de configurações separado */}
+                <div className="col-span-1 border-l border-gray-200 pl-1">
+                  <button
+                    onClick={() => setActiveTab("settings")}
+                    className={`py-2 px-1 rounded-md ${
+                      activeTab === "settings"
+                        ? "bg-primary-blue text-white font-medium"
+                        : "bg-gray-100 text-gray-600"
+                    } text-xs flex flex-col items-center justify-center w-full`}
+                  >
+                    <FontAwesomeIcon icon={faCog} className="mb-1" />
+                    Config
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
             // Layout Desktop com tabs tradicionais
             <div className="border-b border-gray-200">
-              <nav className="-mb-px flex space-x-8">
-                <button
-                  onClick={() => setActiveTab("appointments")}
-                  className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
-                    activeTab === "appointments"
-                      ? "border-primary-blue text-primary-blue font-bold text-base"
-                      : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faCalendarCheck} className="mr-2" />
-                  Agendamentos
-                </button>
-                <button
-                  onClick={() => setActiveTab("reports")}
-                  className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
-                    activeTab === "reports"
-                      ? "border-primary-blue text-primary-blue font-bold text-base"
-                      : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faChartBar} className="mr-2" />
-                  Relatórios
-                </button>
-                <button
-                  onClick={() => setActiveTab("messages")}
-                  className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
-                    activeTab === "messages"
-                      ? "border-primary-blue text-primary-blue font-bold text-base"
-                      : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faMessage} className="mr-2" />
-                  Mensagens
-                </button>
-                <button
-                  onClick={() => setActiveTab("settings")}
-                  className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
-                    activeTab === "settings"
-                      ? "border-primary-blue text-primary-blue font-bold text-base"
-                      : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faCog} className="mr-2" />
-                  Configurações
-                </button>
+              <nav className="flex justify-between">
+                {/* Grupo de tabs principais */}
+                <div className="flex space-x-8">
+                  <button
+                    onClick={() => setActiveTab("appointments")}
+                    className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
+                      activeTab === "appointments"
+                        ? "border-primary-blue text-primary-blue font-bold text-base"
+                        : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faCalendarCheck} className="mr-2" />
+                    Agendamentos
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("reports")}
+                    className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
+                      activeTab === "reports"
+                        ? "border-primary-blue text-primary-blue font-bold text-base"
+                        : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faChartBar} className="mr-2" />
+                    Relatórios
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("messages")}
+                    className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
+                      activeTab === "messages"
+                        ? "border-primary-blue text-primary-blue font-bold text-base"
+                        : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faMessage} className="mr-2" />
+                    Mensagens
+                  </button>
+                </div>
+                
+                {/* Tab de configurações separado */}
+                <div>
+                  <button
+                    onClick={() => setActiveTab("settings")}
+                    className={`py-4 px-1 border-b-2 font-medium cursor-pointer ${
+                      activeTab === "settings"
+                        ? "border-primary-blue text-primary-blue font-bold text-base"
+                        : "border-transparent text-gray-500 hover:text-gray-700 text-sm"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faCog} className="mr-2" />
+                    Configurações
+                  </button>
+                </div>
               </nav>
             </div>
           )}
