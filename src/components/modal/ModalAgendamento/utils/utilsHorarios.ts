@@ -76,8 +76,16 @@ export const validarData = (
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
 
+  // Limite máximo: 30 dias a partir de hoje
+  const limite = new Date(hoje);
+  limite.setDate(limite.getDate() + 30);
+
   if (data < hoje) {
     return { isValid: false, message: "A data não pode ser no passado" };
+  }
+
+  if (data > limite) {
+    return { isValid: false, message: "Só é possível agendar com até 30 dias de antecedência" };
   }
 
   // 0=domingo, 1=segunda, ..., 6=sábado
