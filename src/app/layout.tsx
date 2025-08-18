@@ -87,6 +87,10 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4f46e5" />
         <link rel="apple-touch-icon" href="/logo192.png" />
+        {/* Meta tags explícitas para reforçar o nome do site para mecanismos de busca */}
+        <meta name="application-name" content="Clínica Magna Odonto" />
+        <meta name="apple-mobile-web-app-title" content="Clínica Magna Odonto" />
+        <meta property="og:site_name" content="Clínica Magna Odonto" />
       </head>
       <body className={`${dmSans.className} antialiased`}>        <Script id="schema-dental-clinic" type="application/ld+json">
           {`
