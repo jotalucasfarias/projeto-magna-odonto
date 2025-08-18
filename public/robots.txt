@@ -5,5 +5,5 @@ Disallow: /admin
 Disallow: /dashboard/
 Disallow: /login/
 
-# Sitemap
-Sitemap: https://magnaodonto.vercel.app/sitemap.xml
+# Sitemap (dinâmico via rota Next.js: /sitemap.xml)
+Sitemap: /sitemap.xml
