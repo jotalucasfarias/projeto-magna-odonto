@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useClinicSettings } from '@/hooks/useClinicSettings';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faSpinner, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faSpinner, faTrash, faPlus, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-hot-toast';
 
 type ClinicService = {
@@ -60,11 +60,49 @@ export default function ClinicSettingsPanel() {
   const [newClosureDate, setNewClosureDate] = useState('');
   const [newClosureDescription, setNewClosureDescription] = useState('');
   const [saving, setSaving] = useState(false);
+  const [initialData, setInitialData] = useState<typeof formData | null>(null);
 
   // Carregar dados iniciais
   useEffect(() => {
     if (settings && !isLoading) {
       setFormData({
+        name: settings.name || '',
+        address: {
+          street: settings.address?.street || '',
+          number: settings.address?.number || '',
+          complement: settings.address?.complement || '',
+          neighborhood: settings.address?.neighborhood || '',
+          city: settings.address?.city || '',
+          state: settings.address?.state || '',
+          postalCode: settings.address?.postalCode || '',
+        },
+        contact: {
+          phone: settings.contact?.phone || '',
+          whatsapp: settings.contact?.whatsapp || '',
+          email: settings.contact?.email || '',
+        },
+        socialMedia: {
+          instagram: settings.socialMedia?.instagram || '',
+          facebook: settings.socialMedia?.facebook || '',
+        },
+        businessHours: {
+          weekdaysStart: settings.businessHours?.weekdaysStart || '',
+          weekdaysEnd: settings.businessHours?.weekdaysEnd || '',
+          weekdaysAfternoonStart: settings.businessHours?.weekdaysAfternoonStart || '',
+          weekdaysAfternoonEnd: settings.businessHours?.weekdaysAfternoonEnd || '',
+          saturday: settings.businessHours?.saturday || false,
+          saturdayStart: settings.businessHours?.saturdayStart || '',
+          saturdayEnd: settings.businessHours?.saturdayEnd || '',
+        },
+        services: settings.services || [],
+        responsibleDentist: {
+          name: settings.responsibleDentist?.name || '',
+          cro: settings.responsibleDentist?.cro || '',
+        },
+        specialClosures: settings.specialClosures || [],
+      });
+      // Guardar cópia inicial para detectar alterações e permitir reset
+      setInitialData({
         name: settings.name || '',
         address: {
           street: settings.address?.street || '',
@@ -211,6 +249,8 @@ export default function ClinicSettingsPanel() {
       console.log('Enviando dados completos:', formData);
       await updateSettings(formData);
       toast.success('Informações da clínica atualizadas com sucesso!');
+  // Atualizar snapshot inicial após salvar
+  setInitialData(JSON.parse(JSON.stringify(formData)));
     } catch (error) {
       toast.error('Erro ao atualizar informações da clínica.');
       console.error('Erro ao salvar configurações:', error);
@@ -225,6 +265,15 @@ export default function ClinicSettingsPanel() {
     return date.toLocaleDateString('pt-BR');
   };
 
+  // Detectar mudanças entre formData e initialData
+  const isDirty = Boolean(initialData) && JSON.stringify(formData) !== JSON.stringify(initialData);
+
+  const handleReset = () => {
+    if (!initialData) return;
+    setFormData(JSON.parse(JSON.stringify(initialData)));
+    toast('Revertido para os últimos dados salvos');
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -235,9 +284,39 @@ export default function ClinicSettingsPanel() {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-6">Configurações da Clínica</h2>
+      <div className="flex items-start justify-between gap-6">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Configurações da Clínica</h2>
+          <p className="text-sm text-gray-500">Edite as informações da clínica. Lembre-se de salvar as alterações.</p>
+        </div>
+
+        {/* Preview rápido */}
+        <aside className="ml-auto w-64 bg-gray-50 border border-gray-100 rounded-md p-3">
+          <h4 className="text-sm font-semibold text-gray-700 mb-2">Pré-visualização</h4>
+          <p className="text-base font-bold text-gray-800">{formData.name || '— Nome da clínica —'}</p>
+          <p className="text-sm text-gray-600">{formData.contact.phone || '— Telefone —'}</p>
+          <div className="mt-2 text-sm text-gray-700">
+            <div>Horário:</div>
+            <div className="text-sm text-gray-600">
+              {formData.businessHours.weekdaysStart && formData.businessHours.weekdaysEnd
+                ? `${formData.businessHours.weekdaysStart} - ${formData.businessHours.weekdaysEnd}`
+                : '— Não configurado —'}
+            </div>
+          </div>
+        </aside>
+      </div>
       
       <form onSubmit={handleSubmit}>
+
+        {/* Banner de alterações não salvas */}
+        {isDirty && (
+          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded flex items-center justify-between">
+            <div>Existem alterações não salvas.</div>
+            <button type="button" onClick={handleReset} className="text-sm text-yellow-800 underline flex items-center">
+              <FontAwesomeIcon icon={faUndo} className="mr-2" /> Reverter
+            </button>
+          </div>
+        )}
         {/* Informações Básicas */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Informações Básicas</h3>
@@ -707,11 +786,23 @@ export default function ClinicSettingsPanel() {
           )}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={!isDirty || saving}
+            className="px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 flex items-center"
+            aria-label="Reverter alterações"
+          >
+            <FontAwesomeIcon icon={faUndo} className="mr-2" />
+            Reverter
+          </button>
+
           <button
             type="submit"
-            disabled={saving}
-            className="px-6 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue disabled:opacity-75 flex items-center"
+            disabled={saving || !isDirty}
+            className="px-6 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue disabled:opacity-50 flex items-center"
+            aria-label="Salvar alterações"
           >
             {saving && <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />}
             <FontAwesomeIcon icon={faSave} className="mr-2" />
