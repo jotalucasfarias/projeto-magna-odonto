@@ -7,11 +7,10 @@ import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script";
 
-
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "700"],
-  display: "swap",  
+  display: "swap",
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://magnaodonto.vercel.app';
@@ -56,10 +55,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Clínica Magna Odonto em Porto Velho | Dentista, Ortodontia, Implantes e Tratamentos Odontológicos",
     description: "Tratamentos odontológicos completos em Porto Velho: ortodontia, implantes, avaliação, canal, próteses, gengivoplastia e mais. Atendimento humanizado e tecnologia moderna.",
-    images: [`${siteUrl}/og-image.png`], 
+    images: [`${siteUrl}/og-image.png`],
   },
   verification: {
-    google: "googleb1763076fe4934ae",
+    google: "google8dd7b4e30891a1e1",
   },
   alternates: {
     canonical: siteUrl,
@@ -74,7 +73,6 @@ export const metadata: Metadata = {
     'ICBM': '-8.761160, -63.902150',
   }
 };
-
 
 export default function RootLayout({
   children,
@@ -91,18 +89,71 @@ export default function RootLayout({
         />
         <link rel="canonical" href={siteUrl} />
         <meta name="robots" content="index,follow" />
-
-        <meta name="google-site-verification" content="t-il3FbsYzzcN-AUQK7OFown7GVsQj3lFnW3TnJWYz4" />
-
+        <meta name="google-site-verification" content="google8dd7b4e30891a1e1" />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4f46e5" />
         <link rel="apple-touch-icon" href="/logo192.png" />
-        {/* Meta tags explícitas para reforçar o nome do site para mecanismos de busca */}
         <meta name="application-name" content="Clínica Magna Odonto" />
         <meta name="apple-mobile-web-app-title" content="Clínica Magna Odonto" />
         <meta property="og:site_name" content="Clínica Magna Odonto" />
+
+        {/* JSON-LD: WebSite, Organization, BreadcrumbList */}
+        <Script id="site-structured-data" type="application/ld+json" strategy="beforeInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebSite",
+                "@id": `${siteUrl}#website`,
+                "url": siteUrl,
+                "name": "Clínica Magna Odonto",
+                "description": "Clínica Magna Odonto em Porto Velho — tratamentos odontológicos: ortodontia, implantes, avaliação, canal, próteses e gengivoplastia.",
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": `${siteUrl}/?s={search_term_string}`,
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "Organization",
+                "@id": `${siteUrl}#organization`,
+                "name": "Clínica Magna Odonto",
+                "url": siteUrl,
+                "logo": `${siteUrl}/og-image.png`,
+                "sameAs": [
+                  "https://www.facebook.com/magnaodonto",
+                  "https://www.instagram.com/magnaodontoclinica",
+                  `https://api.whatsapp.com/send?phone=556996021979`
+                ],
+                "contactPoint": [
+                  {
+                    "@type": "ContactPoint",
+                    "contactType": "customer service",
+                    "telephone": "+5569996021979",
+                    "email": "magnamartinha@hotmail.com",
+                    "areaServed": "BR",
+                    "availableLanguage": ["pt-BR"]
+                  }
+                ]
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Início",
+                    "item": siteUrl
+                  }
+                ]
+              }
+            ]
+          })}
+        </Script>
       </head>
-      <body className={`${dmSans.className} antialiased`}>        <Script id="schema-dental-clinic" type="application/ld+json">
+      <body className={`${dmSans.className} antialiased`}>
+        <Script id="schema-dental-clinic" type="application/ld+json">
           {`
             {
               "@context": "https://schema.org",
@@ -143,7 +194,8 @@ export default function RootLayout({
                 "https://www.facebook.com/magnaodonto",
                 "https://www.instagram.com/magnaodontoclinica",
                 "https://api.whatsapp.com/send?phone=556996021979"
-              ],              "priceRange": "$$",
+              ],
+              "priceRange": "$$",
               "paymentAccepted": "Pagamento apenas presencial",
               "availableService": [
                 {
@@ -175,11 +227,12 @@ export default function RootLayout({
             }
           `}
         </Script>
+
         <Toaster position="top-center" />
         <Header />
         <main id="main-content">{children}</main>
         <Footer />
-         <Analytics />
+        <Analytics />
       </body>
     </html>
   );

@@ -5,11 +5,49 @@
     <lastmod>2025-05-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-  </url>  <url>
+  </url>
+  <url>
     <loc>https://magnaodonto.vercel.app/servicos</loc>
     <lastmod>2025-05-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <!-- Páginas de serviços -->
+  <url>
+    <loc>https://magnaodonto.vercel.app/servicos/ortodontia</loc>
+    <lastmod>2025-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://magnaodonto.vercel.app/servicos/implantes-dentarios</loc>
+    <lastmod>2025-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://magnaodonto.vercel.app/servicos/avaliacao-odontologica</loc>
+    <lastmod>2025-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://magnaodonto.vercel.app/servicos/endodontia</loc>
+    <lastmod>2025-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://magnaodonto.vercel.app/servicos/proteses-dentarias</loc>
+    <lastmod>2025-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://magnaodonto.vercel.app/servicos/gengivoplastia</loc>
+    <lastmod>2025-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://magnaodonto.vercel.app/perguntas-frequentes</loc>
