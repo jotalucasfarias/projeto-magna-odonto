@@ -82,7 +82,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" dir="ltr">
       <head>
-        <title>Clínica Magna Odonto em Porto Velho | Dentista, Ortodontia, Implantes e Tratamentos Odontológicos</title>
+        <title>Clínica Magna Odonto - Porto Velho</title>
         <meta
           name="description"
           content="A Clínica Magna Odonto em Porto Velho oferece tratamentos odontológicos completos: ortodontia, implantes dentários, avaliação, canal, próteses e gengivoplastia. Atendimento humanizado e tecnologia moderna."
