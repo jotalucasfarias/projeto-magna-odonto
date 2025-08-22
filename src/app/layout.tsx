@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     images: [`${siteUrl}/og-image.png`], 
   },
   verification: {
-    google: "googleb1763076fe4934ae", // Token de verificação do Google Search Console
+    google: "googleb1763076fe4934ae",
   },
   alternates: {
     canonical: siteUrl,
@@ -91,6 +91,8 @@ export default function RootLayout({
         />
         <link rel="canonical" href={siteUrl} />
         <meta name="robots" content="index,follow" />
+
+        <meta name="google-site-verification" content="t-il3FbsYzzcN-AUQK7OFown7GVsQj3lFnW3TnJWYz4" />
 
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4f46e5" />
