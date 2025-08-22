@@ -84,6 +84,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" dir="ltr">
       <head>
+        <title>Clínica Magna Odonto em Porto Velho | Dentista, Ortodontia, Implantes e Tratamentos Odontológicos</title>
+        <meta
+          name="description"
+          content="A Clínica Magna Odonto em Porto Velho oferece tratamentos odontológicos completos: ortodontia, implantes dentários, avaliação, canal, próteses e gengivoplastia. Atendimento humanizado e tecnologia moderna."
+        />
+        <link rel="canonical" href={siteUrl} />
+        <meta name="robots" content="index,follow" />
+
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4f46e5" />
         <link rel="apple-touch-icon" href="/logo192.png" />
