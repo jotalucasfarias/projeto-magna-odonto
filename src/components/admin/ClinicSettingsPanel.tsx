@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
 import { useClinicSettings } from '@/hooks/useClinicSettings';
+import {
+  faPlus,
+  faSave,
+  faSpinner,
+  faTrash,
+  faUndo,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faSpinner, faTrash, faPlus, faUndo } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 type ClinicService = {
@@ -19,7 +25,7 @@ type SpecialClosureDate = {
 
 export default function ClinicSettingsPanel() {
   const { settings, updateSettings, isLoading } = useClinicSettings();
-  
+
   const [formData, setFormData] = useState({
     name: '',
     address: {
@@ -54,9 +60,9 @@ export default function ClinicSettingsPanel() {
       name: '',
       cro: '',
     },
-    specialClosures: [] as SpecialClosureDate[]
+    specialClosures: [] as SpecialClosureDate[],
   });
-  
+
   const [newClosureDate, setNewClosureDate] = useState('');
   const [newClosureDescription, setNewClosureDescription] = useState('');
   const [saving, setSaving] = useState(false);
@@ -88,8 +94,10 @@ export default function ClinicSettingsPanel() {
         businessHours: {
           weekdaysStart: settings.businessHours?.weekdaysStart || '',
           weekdaysEnd: settings.businessHours?.weekdaysEnd || '',
-          weekdaysAfternoonStart: settings.businessHours?.weekdaysAfternoonStart || '',
-          weekdaysAfternoonEnd: settings.businessHours?.weekdaysAfternoonEnd || '',
+          weekdaysAfternoonStart:
+            settings.businessHours?.weekdaysAfternoonStart || '',
+          weekdaysAfternoonEnd:
+            settings.businessHours?.weekdaysAfternoonEnd || '',
           saturday: settings.businessHours?.saturday || false,
           saturdayStart: settings.businessHours?.saturdayStart || '',
           saturdayEnd: settings.businessHours?.saturdayEnd || '',
@@ -125,8 +133,10 @@ export default function ClinicSettingsPanel() {
         businessHours: {
           weekdaysStart: settings.businessHours?.weekdaysStart || '',
           weekdaysEnd: settings.businessHours?.weekdaysEnd || '',
-          weekdaysAfternoonStart: settings.businessHours?.weekdaysAfternoonStart || '',
-          weekdaysAfternoonEnd: settings.businessHours?.weekdaysAfternoonEnd || '',
+          weekdaysAfternoonStart:
+            settings.businessHours?.weekdaysAfternoonStart || '',
+          weekdaysAfternoonEnd:
+            settings.businessHours?.weekdaysAfternoonEnd || '',
           saturday: settings.businessHours?.saturday || false,
           saturdayStart: settings.businessHours?.saturdayStart || '',
           saturdayEnd: settings.businessHours?.saturdayEnd || '',
@@ -141,51 +151,55 @@ export default function ClinicSettingsPanel() {
     }
   }, [settings, isLoading]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    
+
     // Lidar com campos aninhados usando notação de ponto
     if (name.includes('.')) {
       const [section, field] = name.split('.');
-      
-      setFormData(prev => ({
+
+      setFormData((prev) => ({
         ...prev,
         [section]: {
           ...((prev[section as keyof typeof prev] ?? {}) as object),
-          [field]: value
-        }
+          [field]: value,
+        },
       }));
-      
+
       // Log para depuração
       console.log(`Updating ${section}.${field} to:`, value);
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    
+
     if (name.includes('.')) {
       const [section, field] = name.split('.');
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [section]: {
           ...((prev[section as keyof typeof prev] ?? {}) as object),
-          [field]: checked
-        }
+          [field]: checked,
+        },
       }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: checked }));
+      setFormData((prev) => ({ ...prev, [name]: checked }));
     }
   };
 
   const handleServiceChange = (serviceId: string, isActive: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      services: prev.services.map(service => 
-        service.id === serviceId ? { ...service, active: isActive } : service
-      )
+      services: prev.services.map((service) =>
+        service.id === serviceId ? { ...service, active: isActive } : service,
+      ),
     }));
   };
 
@@ -197,18 +211,18 @@ export default function ClinicSettingsPanel() {
 
     const today = new Date();
     const selectedDate = new Date(newClosureDate);
-    
-    // Reset time part for accurate comparison
+
+    // Zerar a parte do horário para comparação precisa
     today.setHours(0, 0, 0, 0);
-    
+
     if (selectedDate < today) {
       toast.error('Não é possível adicionar datas passadas');
       return;
     }
 
-    // Check if date already exists
+    // Verificar se a data já existe
     const dateAlreadyExists = formData.specialClosures.some(
-      closure => closure.date === newClosureDate
+      (closure) => closure.date === newClosureDate,
     );
 
     if (dateAlreadyExists) {
@@ -219,12 +233,12 @@ export default function ClinicSettingsPanel() {
     const newClosure: SpecialClosureDate = {
       id: Date.now().toString(),
       date: newClosureDate,
-      description: newClosureDescription.trim() || 'Clínica fechada'
+      description: newClosureDescription.trim() || 'Clínica fechada',
     };
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specialClosures: [...prev.specialClosures, newClosure]
+      specialClosures: [...prev.specialClosures, newClosure],
     }));
 
     setNewClosureDate('');
@@ -233,9 +247,11 @@ export default function ClinicSettingsPanel() {
   };
 
   const handleRemoveSpecialClosure = (id: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specialClosures: prev.specialClosures.filter(closure => closure.id !== id)
+      specialClosures: prev.specialClosures.filter(
+        (closure) => closure.id !== id,
+      ),
     }));
     toast.success('Data de fechamento removida');
   };
@@ -243,14 +259,14 @@ export default function ClinicSettingsPanel() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSaving(true);
-    
+
     try {
       // Log completo do formulário antes de enviar
       console.log('Enviando dados completos:', formData);
       await updateSettings(formData);
       toast.success('Informações da clínica atualizadas com sucesso!');
-  // Atualizar snapshot inicial após salvar
-  setInitialData(JSON.parse(JSON.stringify(formData)));
+      // Atualizar snapshot inicial após salvar
+      setInitialData(JSON.parse(JSON.stringify(formData)));
     } catch (error) {
       toast.error('Erro ao atualizar informações da clínica.');
       console.error('Erro ao salvar configurações:', error);
@@ -259,14 +275,16 @@ export default function ClinicSettingsPanel() {
     }
   };
 
-  // Format date to Brazilian format (dd/mm/yyyy)
+  // Formatar data para o padrão brasileiro (dd/mm/aaaa)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR');
   };
 
   // Detectar mudanças entre formData e initialData
-  const isDirty = Boolean(initialData) && JSON.stringify(formData) !== JSON.stringify(initialData);
+  const isDirty =
+    Boolean(initialData) &&
+    JSON.stringify(formData) !== JSON.stringify(initialData);
 
   const handleReset = () => {
     if (!initialData) return;
@@ -277,7 +295,11 @@ export default function ClinicSettingsPanel() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <FontAwesomeIcon icon={faSpinner} spin className="text-3xl text-primary-blue" />
+        <FontAwesomeIcon
+          icon={faSpinner}
+          spin
+          className="text-3xl text-primary-blue"
+        />
       </div>
     );
   }
@@ -286,43 +308,62 @@ export default function ClinicSettingsPanel() {
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-start justify-between gap-6">
         <div>
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Configurações da Clínica</h2>
-          <p className="text-sm text-gray-500">Edite as informações da clínica. Lembre-se de salvar as alterações.</p>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">
+            Configurações da Clínica
+          </h2>
+          <p className="text-sm text-gray-500">
+            Edite as informações da clínica. Lembre-se de salvar as alterações.
+          </p>
         </div>
 
         {/* Preview rápido */}
         <aside className="ml-auto w-64 bg-gray-50 border border-gray-100 rounded-md p-3">
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Pré-visualização</h4>
-          <p className="text-base font-bold text-gray-800">{formData.name || '— Nome da clínica —'}</p>
-          <p className="text-sm text-gray-600">{formData.contact.phone || '— Telefone —'}</p>
+          <h4 className="text-sm font-semibold text-gray-700 mb-2">
+            Pré-visualização
+          </h4>
+          <p className="text-base font-bold text-gray-800">
+            {formData.name || '— Nome da clínica —'}
+          </p>
+          <p className="text-sm text-gray-600">
+            {formData.contact.phone || '— Telefone —'}
+          </p>
           <div className="mt-2 text-sm text-gray-700">
             <div>Horário:</div>
             <div className="text-sm text-gray-600">
-              {formData.businessHours.weekdaysStart && formData.businessHours.weekdaysEnd
+              {formData.businessHours.weekdaysStart &&
+              formData.businessHours.weekdaysEnd
                 ? `${formData.businessHours.weekdaysStart} - ${formData.businessHours.weekdaysEnd}`
                 : '— Não configurado —'}
             </div>
           </div>
         </aside>
       </div>
-      
-      <form onSubmit={handleSubmit}>
 
+      <form onSubmit={handleSubmit}>
         {/* Banner de alterações não salvas */}
         {isDirty && (
           <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded flex items-center justify-between">
             <div>Existem alterações não salvas.</div>
-            <button type="button" onClick={handleReset} className="text-sm text-yellow-800 underline flex items-center">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="text-sm text-yellow-800 underline flex items-center"
+            >
               <FontAwesomeIcon icon={faUndo} className="mr-2" /> Reverter
             </button>
           </div>
         )}
         {/* Informações Básicas */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Informações Básicas</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Informações Básicas
+          </h3>
+
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Nome da Clínica
             </label>
             <input
@@ -339,7 +380,10 @@ export default function ClinicSettingsPanel() {
           {/* Dentista Responsável */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label htmlFor="responsibleDentist.name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="responsibleDentist.name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Dentista Responsável
               </label>
               <input
@@ -353,7 +397,10 @@ export default function ClinicSettingsPanel() {
               />
             </div>
             <div>
-              <label htmlFor="responsibleDentist.cro" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="responsibleDentist.cro"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 CRO
               </label>
               <input
@@ -371,11 +418,16 @@ export default function ClinicSettingsPanel() {
 
         {/* Endereço */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Endereço</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Endereço
+          </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="mb-4">
-              <label htmlFor="address.street" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="address.street"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Rua/Avenida
               </label>
               <input
@@ -389,7 +441,10 @@ export default function ClinicSettingsPanel() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="address.number" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="address.number"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Número
               </label>
               <input
@@ -405,7 +460,10 @@ export default function ClinicSettingsPanel() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="address.complement" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="address.complement"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Complemento
             </label>
             <input
@@ -420,7 +478,10 @@ export default function ClinicSettingsPanel() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="mb-4">
-              <label htmlFor="address.neighborhood" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="address.neighborhood"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Bairro
               </label>
               <input
@@ -434,7 +495,10 @@ export default function ClinicSettingsPanel() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="address.city" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="address.city"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Cidade
               </label>
               <input
@@ -448,7 +512,10 @@ export default function ClinicSettingsPanel() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="address.state" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="address.state"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Estado
               </label>
               <input
@@ -465,7 +532,10 @@ export default function ClinicSettingsPanel() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="address.postalCode" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="address.postalCode"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               CEP
             </label>
             <input
@@ -481,11 +551,16 @@ export default function ClinicSettingsPanel() {
 
         {/* Contato */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Contato</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Contato
+          </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="mb-4">
-              <label htmlFor="contact.phone" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="contact.phone"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Telefone
               </label>
               <input
@@ -499,7 +574,10 @@ export default function ClinicSettingsPanel() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="contact.whatsapp" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="contact.whatsapp"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 WhatsApp
               </label>
               <input
@@ -514,7 +592,10 @@ export default function ClinicSettingsPanel() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="contact.email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="contact.email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -531,11 +612,16 @@ export default function ClinicSettingsPanel() {
 
         {/* Redes Sociais */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Redes Sociais</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Redes Sociais
+          </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="mb-4">
-              <label htmlFor="socialMedia.instagram" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="socialMedia.instagram"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Instagram (URL completa)
               </label>
               <input
@@ -549,7 +635,10 @@ export default function ClinicSettingsPanel() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="socialMedia.facebook" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="socialMedia.facebook"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Facebook (URL completa)
               </label>
               <input
@@ -567,13 +656,20 @@ export default function ClinicSettingsPanel() {
 
         {/* Horário de Funcionamento */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Horário de Funcionamento</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Horário de Funcionamento
+          </h3>
+
           <div className="mb-4">
-            <h4 className="text-md font-medium text-gray-700 mb-2">Dias de semana</h4>
+            <h4 className="text-md font-medium text-gray-700 mb-2">
+              Dias de semana
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label htmlFor="businessHours.weekdaysStart" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="businessHours.weekdaysStart"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Abertura (manhã)
                 </label>
                 <input
@@ -587,7 +683,10 @@ export default function ClinicSettingsPanel() {
                 />
               </div>
               <div>
-                <label htmlFor="businessHours.weekdaysEnd" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="businessHours.weekdaysEnd"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Fechamento (manhã)
                 </label>
                 <input
@@ -601,7 +700,10 @@ export default function ClinicSettingsPanel() {
                 />
               </div>
               <div>
-                <label htmlFor="businessHours.weekdaysAfternoonStart" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="businessHours.weekdaysAfternoonStart"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Abertura (tarde)
                 </label>
                 <input
@@ -615,7 +717,10 @@ export default function ClinicSettingsPanel() {
                 />
               </div>
               <div>
-                <label htmlFor="businessHours.weekdaysAfternoonEnd" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="businessHours.weekdaysAfternoonEnd"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Fechamento (tarde)
                 </label>
                 <input
@@ -641,15 +746,21 @@ export default function ClinicSettingsPanel() {
                 onChange={handleCheckboxChange}
                 className="h-4 w-4 text-primary-blue focus:ring-primary-blue border-gray-300 rounded"
               />
-              <label htmlFor="businessHours.saturday" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="businessHours.saturday"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Atendimento aos sábados
               </label>
             </div>
-            
+
             {formData.businessHours.saturday && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pl-6">
                 <div>
-                  <label htmlFor="businessHours.saturdayStart" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="businessHours.saturdayStart"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Abertura (sábado)
                   </label>
                   <input
@@ -663,7 +774,10 @@ export default function ClinicSettingsPanel() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="businessHours.saturdayEnd" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="businessHours.saturdayEnd"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Fechamento (sábado)
                   </label>
                   <input
@@ -683,19 +797,29 @@ export default function ClinicSettingsPanel() {
 
         {/* Serviços */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Serviços Oferecidos</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Serviços Oferecidos
+          </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {formData.services.map(service => (
-              <div key={service.id} className="flex items-center p-3 border rounded-md">
+            {formData.services.map((service) => (
+              <div
+                key={service.id}
+                className="flex items-center p-3 border rounded-md"
+              >
                 <input
                   type="checkbox"
                   id={`service-${service.id}`}
                   checked={service.active}
-                  onChange={(e) => handleServiceChange(service.id, e.target.checked)}
+                  onChange={(e) =>
+                    handleServiceChange(service.id, e.target.checked)
+                  }
                   className="h-4 w-4 text-primary-blue focus:ring-primary-blue border-gray-300 rounded"
                 />
-                <label htmlFor={`service-${service.id}`} className="ml-2 block text-sm text-gray-700">
+                <label
+                  htmlFor={`service-${service.id}`}
+                  className="ml-2 block text-sm text-gray-700"
+                >
                   {service.name}
                 </label>
               </div>
@@ -705,12 +829,17 @@ export default function ClinicSettingsPanel() {
 
         {/* Feriados e Dias sem Atendimento */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">Feriados e Fechamentos Especiais</h3>
-          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">
+            Feriados e Fechamentos Especiais
+          </h3>
+
           <div className="mb-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="newClosureDate" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="newClosureDate"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Data
                 </label>
                 <input
@@ -722,7 +851,10 @@ export default function ClinicSettingsPanel() {
                 />
               </div>
               <div>
-                <label htmlFor="newClosureDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="newClosureDescription"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Descrição (opcional)
                 </label>
                 <input
@@ -749,27 +881,45 @@ export default function ClinicSettingsPanel() {
 
           {formData.specialClosures.length > 0 ? (
             <div className="mt-4">
-              <h4 className="text-md font-medium text-gray-700 mb-2">Datas cadastradas:</h4>
+              <h4 className="text-md font-medium text-gray-700 mb-2">
+                Datas cadastradas:
+              </h4>
               <div className="border rounded-md overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
-                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Data
+                      </th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Descrição
+                      </th>
+                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ações
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {formData.specialClosures
-                      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                      .sort(
+                        (a, b) =>
+                          new Date(a.date).getTime() -
+                          new Date(b.date).getTime(),
+                      )
                       .map((closure) => (
                         <tr key={closure.id} className="bg-white">
-                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{formatDate(closure.date)}</td>
-                          <td className="px-4 py-2 text-sm text-gray-700">{closure.description}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                            {formatDate(closure.date)}
+                          </td>
+                          <td className="px-4 py-2 text-sm text-gray-700">
+                            {closure.description}
+                          </td>
                           <td className="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
                             <button
                               type="button"
-                              onClick={() => handleRemoveSpecialClosure(closure.id)}
+                              onClick={() =>
+                                handleRemoveSpecialClosure(closure.id)
+                              }
                               className="text-red-600 hover:text-red-800"
                             >
                               <FontAwesomeIcon icon={faTrash} />
@@ -782,7 +932,9 @@ export default function ClinicSettingsPanel() {
               </div>
             </div>
           ) : (
-            <p className="text-sm text-gray-500 italic">Nenhum feriado ou fechamento especial cadastrado.</p>
+            <p className="text-sm text-gray-500 italic">
+              Nenhum feriado ou fechamento especial cadastrado.
+            </p>
           )}
         </div>
 
@@ -804,7 +956,9 @@ export default function ClinicSettingsPanel() {
             className="px-6 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue disabled:opacity-50 flex items-center"
             aria-label="Salvar alterações"
           >
-            {saving && <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />}
+            {saving && (
+              <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+            )}
             <FontAwesomeIcon icon={faSave} className="mr-2" />
             Salvar Alterações
           </button>
